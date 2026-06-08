@@ -1,0 +1,67 @@
+id,Tanggal / Waktu Kejadian,Minggu,Bulan,Tahun,Kode Provinsi,Provinsi,Kode Kabupaten,Kabupaten,Kode Jenis Kejadian,Nama Kejadian,Jenis Bencana,is_bencana,Jumlah Kejadian,Meninggal,Hilang,Luka / Sakit,menderita_mengungsi,Rumah Rusak Berat,Rumah Rusak Sedang,Rumah Rusak Ringan,Rumah Terendam,Satuan Pendidikan Rusak,Rumah Ibadat Rusak,Fasilitas Pelayanan Kesehatan Rusak,Kantor Rusak,Jembatan Rusak
+41ac1d94-4fd0-413e-aee5-d47228ea7503,2025-05-12 08:00:00,20,5,2025,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,3,0,0,15622,0,0,0,5438,0,0,0,0,0
+36dc95e6-ecbb-480f-b562-728ff852526b,2025-01-27 07:00:00,5,1,2025,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,7939,0,0,0,2205,0,0,0,0,0
+a57a132a-65d3-4217-a477-66aa7a1064de,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,75,0,0,0,20,0,0,0,0,0
+48b2090c-eb90-4ef2-b2d9-b1e4ad0fef15,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,0,0,0,0,0,0,0,0,0,0
+2594077c-7e2d-4ea8-bc6f-9ea7e646005b,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,100,0,0,0,25,0,0,0,0,0
+ce341867-3ddc-43b0-a507-ed5bffd2aaa2,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,64,0,0,0,16,0,0,0,0,0
+3d49d694-2b3e-4a54-b1ff-8ce0d87dbd73,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,60,0,0,0,15,0,0,0,0,0
+a745c5e3-6ded-478c-a6b6-4f7e7bce7170,2024-10-07 00:01:00,41,10,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,400,0,0,0,100,0,0,0,0,0
+f77badaa-8d09-48ff-80db-ba9997c79528,2024-08-29 00:01:00,35,8,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,1,0,0,0,0,0,0,0,0,0,0,0,0
+1a0a6115-9bce-4af3-83d7-504c68a95b11,2024-08-17 11:30:00,33,8,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,183,0,0,0,42,0,0,0,0,0
+0fefdbec-7a1e-4d8e-9526-d812cb5cad4b,2024-08-09 07:30:00,32,8,2024,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,2810,0,0,0,0,0,0,0,0,0
+49dff712-5205-4509-b106-7a698ad2d964,2024-07-10 00:01:00,28,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,55,0,0,0,16,0,0,0,0,0
+9ae0064f-d427-4b29-8450-faebe58ec02a,2024-07-08 00:01:00,28,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,372,0,0,0,93,0,0,0,0,0
+71753919-4937-44d7-949f-83e45a9d3c21,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,729,0,0,0,100,0,0,0,0,0
+52562379-f08b-4800-abdc-87712b16f187,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,400,0,0,0,100,0,0,0,0,0
+18cc5524-0b86-4ed8-99ee-da765adc2bc3,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,60,0,0,0,15,0,0,0,0,0
+bb20e746-a895-416d-aa1d-61b545909dc3,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,75,0,0,0,20,0,0,0,0,0
+fb487ff6-6953-4dbe-beea-ff884867cf41,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,64,0,0,0,16,0,0,0,0,0
+bd60ee98-29d4-431e-86b8-bcd815450bdf,2024-07-07 00:01:00,27,7,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,0.16666666666666666,0,0,0,100,0,0,0,25,0,0,0,0,0
+8fb6a936-ac61-4e67-9ab9-8775014bdaea,2024-05-13 19:20:00,20,5,2024,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,150,0,0,0,30,0,0,0,0,0
+1afd3fb8-e1fc-40a5-8d1b-30e3ae05f2f7,2023-12-24 19:30:00,51,12,2023,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+cba4e481-0681-41ae-acfb-237ec4fecbff,2023-12-17 09:30:00,50,12,2023,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,1435,0,0,0,287,0,0,0,0,0
+ac0efabe-9b10-4384-88fb-b649015c8b11,2023-07-21 18:00:00,29,7,2023,64,Kalimantan Timur,64.72,Kota Samarinda,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,3760,0,1,1,1050,0,0,0,0,0
+9cc41f6d-40af-4a54-bc6a-313fd6fa8787,2023-04-30 10:00:00,17,4,2023,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,645,0,0,0,0,0,0,0,0,0
+188010ed-9c99-4a08-bde0-2ebd975df315,2023-04-18 00:01:00,16,4,2023,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ff3c1e0d-7208-4e89-94b1-eb3ae71aa026,2022-10-09 12:20:00,40,10,2022,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,758,0,0,0,0,0,0,0,0,0
+bc9d37fb-9a18-41b5-bbe6-78fa62a2078d,2022-09-14 02:00:00,37,9,2022,64,Kalimantan Timur,64.72,Kota Samarinda,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,1,0,1,133,0,0,0,19,0,0,0,0,0
+093fd72b-2fde-42b9-a8c1-a9b4a7813230,2022-08-25 00:30:00,34,8,2022,64,Kalimantan Timur,64.71,Kota Balikpapan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,7905,0,0,0,1555,0,0,0,0,0
+fc9bae62-6c85-4110-bb2d-76fc0274d854,2022-07-27 22:00:00,30,7,2022,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,650,0,0,0,239,0,0,0,0,0
+70d089ae-2bd6-42da-ab45-4e47baa558a6,2022-03-22 19:00:00,12,3,2022,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,10250,0,0,0,1722,0,0,0,0,0
+f57b0eb5-d0c6-4640-ae61-26563a55048a,2022-03-16 02:00:00,11,3,2022,64,Kalimantan Timur,64.71,Kota Balikpapan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,9194,0,0,0,2806,0,0,0,0,0
+b2ccb45b-9deb-448f-834a-247774fa6e3e,2022-02-15 22:30:00,7,2,2022,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,1450,0,0,0,295,0,0,0,0,0
+a15acaaa-bc6c-475d-8959-5179e310d8ef,2022-02-06 09:00:00,5,2,2022,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,21,0,0,0,5,0,0,0,0,0
+e5aee86e-b984-42fb-b044-576d57b59f2b,2021-10-18 11:00:00,42,10,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,11304,0,0,0,1901,0,0,0,0,0
+a89424e5-d183-4119-b5bc-bc7eaedc8e25,2021-09-16 00:01:00,37,9,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,7706,0,0,0,0,0,0,0,0,0
+ebcec694-f4e2-4e74-a35c-357d9e93898b,2021-09-13 05:00:00,37,9,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,1,0,0,5069,0,0,0,0,0,0,0,0,0
+02873664-701e-4eeb-8eef-61ecf13df12e,2021-09-03 00:01:00,35,9,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,5028,0,0,0,1197,0,0,0,0,0
+fff25881-1039-47e2-94fa-57386f065a79,2021-09-02 15:40:00,35,9,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,7706,0,0,0,915,0,0,0,0,0
+b04d3212-32d9-48ef-bb3a-edfa6e6f392c,2021-08-31 00:01:00,35,8,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,2734,0,0,0,0,0,0,0,0,0
+5f7958db-83a8-44bf-97a8-ad2fec31f98c,2021-08-29 18:30:00,34,8,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,2808,0,0,1,0,0,0,0,0,0
+bdb69f15-a18d-4bb1-9bb9-462f07916bc1,2021-08-28 09:00:00,34,8,2021,64,Kalimantan Timur,64.71,Kota Balikpapan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,800,0,0,0,200,0,0,0,0,0
+e85592ae-ffc0-4245-8a6f-811d966953fd,2021-07-02 09:00:00,26,7,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,1003,0,0,0,701,0,0,0,0,0
+28c6818a-a381-4c37-834a-9b2b8ead01bc,2021-03-23 05:00:00,12,3,2021,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,975,0,0,0,190,0,0,0,0,0
+6445882d-5803-4fdd-881d-4f2331a334c8,2021-01-14 00:01:00,2,1,2021,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+742a1fff-c3b8-4253-8005-99613e67d96c,2020-12-01 09:00:00,49,12,2020,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,4020,0,0,0,566,0,0,0,0,0
+1b14a270-0de3-480c-863a-07553a20765d,2020-05-25 00:01:00,22,5,2020,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,20727,0,0,0,1634,0,0,0,0,0
+33585f8b-3538-42cb-b57f-3b7f91a0589c,2020-05-23 00:00:00,21,5,2020,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,68824,0,0,0,3596,1,4,0,0,0
+ca1ccfd6-687e-4027-a117-29387b13095d,2020-01-30 03:00:00,5,1,2020,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,3,0,0,0,0,0
+6684923f-d56e-43f3-9dee-a3c638f227e7,2020-01-13 12:30:00,3,1,2020,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,13510,0,0,0,2081,9,17,5,0,0
+d9d87687-475c-49f5-8b42-52ce92b0f6cc,2019-06-05 22:00:00,23,6,2019,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,56133,0,0,0,626,0,0,0,0,0
+30da0059-7219-4beb-81e4-1e597d082f52,2018-06-21 00:01:00,25,6,2018,64,Kalimantan Timur,64.71,Kota Balikpapan,1016,Banjir Genangan,Banjir,True,1.0,1,0,0,0,0,0,0,0,0,0,0,0,0
+004389cb-ce94-45a3-9621-97f801866220,2018-06-07 00:01:00,23,6,2018,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,1,0,0,0,0,0,0
+57dc9fe6-43c7-439c-be9f-b8b20839661e,2018-05-07 00:01:00,19,5,2018,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,59,0,0,0,0,0
+8a8285c0-6a03-46d2-bf2a-c01392f4fe5b,2018-03-24 00:01:00,12,3,2018,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,620,0,0,0,0,0,0,0,0,0
+c6208154-dbec-4b9a-87ae-782aba0b1dd5,2018-03-21 00:01:00,12,3,2018,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,27691,0,0,0,5170,0,0,0,0,0
+570b7260-47eb-419b-b174-289a50a8dce8,2017-08-29 08:08:08,35,8,2017,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,5000,0,0,0,800,0,0,0,0,0
+901c3264-722c-4e5a-ba0a-a9212181359f,2017-08-13 08:08:08,32,8,2017,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,15,0,0,0,67,0,0,0,0,0
+d09c8d61-63da-4c71-96d6-d91e11a3065a,2017-08-12 08:08:08,32,8,2017,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,14124,0,0,0,0,0,0,0,0,0
+b2235c46-15c1-4c40-aabf-43f44193411c,2017-06-18 08:08:08,24,6,2017,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ff0e3892-e1cd-45e6-a398-afdef4608180,2017-06-02 08:08:08,22,6,2017,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,5,0,0,1,0,0,0,0,0,0
+d63f5ac3-f3cf-436b-ba08-b5d7dd42f4f9,2017-04-04 08:08:08,14,4,2017,64,Kalimantan Timur,64.72,Kota Samarinda,1010,Banjir,Banjir,True,1.0,0,0,0,15000,0,0,0,6000,0,0,0,0,0
+b7386195-340d-45bd-84a1-e0ef903abbb6,2017-03-30 08:08:08,13,3,2017,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,100,0,0,0,0,0
+a74c619b-6190-4338-bf43-f57d767a8b9a,2016-10-24 08:08:08,43,10,2016,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,660,0,0,0,89,0,0,0,0,0
+ecb073e9-c543-48f0-b454-d38f0abf9dd9,2016-09-18 08:08:08,37,9,2016,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,45,0,0,0,0,0
+0124346f-3087-4166-9102-69a4876e570b,2016-07-22 08:08:08,29,7,2016,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,135,0,0,0,0,0
+68e85281-087a-4141-9d5f-8e41a30413ca,2016-07-13 08:08:08,28,7,2016,64,Kalimantan Timur,64.71,Kota Balikpapan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,64,0,0,0,0,0

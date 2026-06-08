@@ -1,0 +1,26 @@
+# Flood AutoML — dependencies (Python 3.11 disarankan)
+# Instal:  pip install -r requirements.txt
+numpy
+pandas
+matplotlib
+scipy
+scikit-learn
+openpyxl
+
+# Geospasial
+geopandas
+rasterio
+pyogrio
+shapely
+pyproj
+rtree
+
+# Machine learning / AutoML
+flaml[automl]
+xgboost
+catboost
+shap
+
+# Notebook
+nbformat
+jupyter
