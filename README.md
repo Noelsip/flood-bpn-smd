@@ -1,65 +1,72 @@
-# Flood Probability Estimation (AutoML) — Balikpapan & Samarinda
+# Prediksi Banjir 3 Hari ke Depan — Balikpapan & Samarinda (AutoML)
 
-Implementasi lokal (Windows) dari paper *Flood Probability Estimation using AutoML in
-Balikpapan and Samarinda*. Memakai data asli: DEM SRTM, RBI (sungai/jalan/land cover),
-data banjir BPS, dan kepadatan penduduk.
+Memprediksi **kejadian banjir 3 hari ke depan** (`Flood_t+3`) dari data **cuaca harian + banjir**
+yang ditransformasi menjadi **time series** (lag feature `t-1..t-7` + akumulasi/rolling),
+lalu dilatih dengan **AutoML (FLAML)** + Random Forest / XGBoost / CatBoost.
 
-## Struktur
+- **Jenis data:** time series (cuaca berurutan → lag feature).
+- **Target:** klasifikasi biner banjir (0/1) di `t+3` → *Time Series Classification*, bukan forecasting nilai kontinu.
+- **Wilayah:** data banjir per-kecamatan (BPS) diikutkan sebagai konteks per kota.
+
+## Jalankan di Google Colab (disarankan)
+
+```python
+!git clone <URL-REPO-GITHUB-MU>.git
+%cd machine-learning
+```
+
+Lalu buka **`Flood_AutoML_Tabular.ipynb`** dan jalankan sel dari atas ke bawah.
+Sel pertama memasang dependensi otomatis saat di Colab. Notebook memilih `MODE` sendiri:
+
+| Data tersedia | `MODE` | Hasil |
+|---|---|---|
+| **DEM + RBI tidak ada** (default repo ini) | `timeseries` | Prediksi banjir `t+3` dari cuaca + banjir. |
+| **DEM + RBI ada** (extract zip ke `dem/`, `RBI/`, `padat-penduduk/`) | `geospatial` | Peta probabilitas banjir per kota. |
+
+## Jalankan lokal
+
+```bash
+pip install -r requirements.txt
+jupyter notebook Flood_AutoML_Tabular.ipynb
+```
+
+## Struktur repo
 
 ```
 machine-learning/
-├─ Flood_AutoML_Local.ipynb     <- NOTEBOOK UTAMA (jalankan ini)
+├─ Flood_AutoML_Tabular.ipynb     # NOTEBOOK UTAMA (mode otomatis)
 ├─ requirements.txt
-├─ scripts/
-│  ├─ 01_clean_tabular.py        <- bersihkan banjir + penduduk -> clean/*.csv
-│  └─ 02_build_notebook.py       <- generator notebook (sudah dijalankan)
-├─ clean/                        <- HASIL pembersihan (sudah dibuat)
-│  ├─ banjir_balikpapan.csv      banjir_samarinda.csv
-│  ├─ penduduk_balikpapan.csv    penduduk_samarinda.csv
-│  └─ admin/                     <- ⚠️ KAMU ISI: batas kecamatan & kelurahan kota
-├─ dem/   RBI/   banjir/   padat-penduduk/   <- data mentah
-└─ outputs/                      <- hasil model & peta (dibuat saat notebook jalan)
+├─ intruksi.md                    # catatan revisi dosen
+├─ dataset/                       # data mentah
+│  ├─ data-cuaca_smdbpp16-26.csv  #   cuaca harian (Open-Meteo)
+│  └─ bnpb-banjir_Smdbpp.csv      #   kejadian banjir berlabel tanggal (BNPB)
+├─ processed/
+│  ├─ build_primary_dataset.py    # mentah  -> dataset_utama.csv (cuaca + Flood harian)
+│  ├─ build_timeseries_dataset.py # utama   -> dataset_timeseries.csv (lag + rolling + Flood_t+3)
+│  ├─ dataset_utama.csv
+│  └─ dataset_timeseries.csv      # dataset siap latih (sudah disertakan)
+├─ clean/                         # data wilayah (untuk fitur wilayah & mode geospasial)
+│  ├─ banjir_balikpapan.csv  banjir_samarinda.csv     # banjir per kecamatan
+│  ├─ penduduk_*.csv                                  # kepadatan penduduk
+│  └─ admin/*.geojson                                 # batas kecamatan/kelurahan
+├─ banjir/                        # sumber mentah banjir per kecamatan (BPS)
+└─ scripts/build_notebooks.py     # generator notebook (regenerasi bila perlu)
 ```
 
-## Cara menjalankan
+## Membangun ulang data & notebook
 
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-
-python scripts\01_clean_tabular.py     # sudah diuji, menghasilkan folder clean/
-jupyter notebook Flood_AutoML_Local.ipynb   # jalankan sel atas->bawah
+```bash
+python processed/build_primary_dataset.py       # -> processed/dataset_utama.csv
+python processed/build_timeseries_dataset.py    # -> processed/dataset_timeseries.csv
+python scripts/build_notebooks.py               # -> Flood_AutoML_Tabular.ipynb
 ```
 
-## ⚠️ Yang HARUS kamu lengkapi sebelum notebook bisa jalan penuh
+## Transformasi time series (inti revisi dosen)
 
-### 1. Batas administrasi kota (WAJIB) — penyebab utama
-Layer administrasi di RBI `.gdb` bawaan **TIDAK memuat Kota Balikpapan/Samarinda**
-(hanya kabupaten tetangga: Kutai Kartanegara, Penajam Paser Utara). Layer spasial lain
-(sungai, jalan, land cover) **sudah benar** menutupi kota. Jadi yang kurang **hanya batas admin**.
-
-Sediakan 4 file di `clean/admin/` (format .geojson / .shp / .gpkg):
-- `balikpapan_kecamatan.geojson`, `balikpapan_kelurahan.geojson`
-- `samarinda_kecamatan.geojson`,  `samarinda_kelurahan.geojson`
-
-Sumber:
-- **BIG / tanahair.indonesia.go.id** → "Batas Wilayah Administrasi Desa" Kota Balikpapan & Samarinda (paling resmi).
-- **GADM** (gadm.org) Indonesia level 3 (kecamatan) & level 4 (kelurahan) → potong ke 2 kota.
-
-Lalu di **Sel 1** notebook, set `ADMIN_KEC_NAMECOL` / `ADMIN_KEL_NAMECOL` ke nama kolom
-sumbermu (RBI: `WADMKC`/`WADMKD`; GADM: `NAME_3`/`NAME_4`).
-
-### 2. Penduduk Balikpapan (disarankan)
-`clean/penduduk_balikpapan.csv` baru mencakup 3 dari 6 kecamatan
-(Barat, Utara, Kota). Kecamatan **Selatan, Timur, Tengah** belum ada → `pop_density` NaN
-untuk titik di sana. Lengkapi data penduduk per kelurahan-nya bila tersedia.
-
-## Catatan metodologi (untuk laporan/skripsi)
-- Model terbaik dipilih dari **AUC-ROC** (sesuai paper), + Precision/Recall/F1.
-- **Keterbatasan label banjir:** data BPS hanya level **kecamatan** (jumlah kelurahan
-  terdampak), bukan koordinat. Titik banjir ditempatkan *terrain-constrained* (zona
-  elevasi rendah dalam kecamatan terdampak, jumlah ∝ intensitas). Dokumentasikan asumsi ini.
-- 6 conditioning factor: elevation, slope, dist_river, dist_road, landcover, pop_density.
-  Untuk publikasi, pertimbangkan menambah **curah hujan** & **TWI** (dari DEM).
-```
+- Untuk tiap variabel cuaca (`precip, tmax, tmin, wind, rain, soil`) dibuat **lag `t-1..t-7`**.
+- Ditambah **akumulasi**: hujan 3/7/14 hari, presipitasi 3/7 hari, kelembapan tanah rata-rata 3/7 hari.
+- **Target** = banjir pada `t+3` (geser −3 per kota).
+- **Anti-leakage:** fitur hanya memakai data ≤ `t`; split **berbasis waktu** (70% awal / 30% akhir);
+  imbalance (SMOTE / class weight) ditangani **hanya pada data latih, setelah split**.
+- Metrik utama: **Recall** & **AUC-PR** (lebih relevan dari accuracy untuk data sangat timpang;
+  banjir ≈ 0,8% dari data).

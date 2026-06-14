@@ -19,6 +19,7 @@ rtree
 flaml[automl]
 xgboost
 catboost
+imbalanced-learn
 shap
 
 # Notebook

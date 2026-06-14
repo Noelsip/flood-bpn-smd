@@ -1,2 +1,7 @@
 .claude/
 .venv/
+__pycache__/
+outputs/
+catboost_info/
+catboost_*/
+.ipynb_checkpoints/
