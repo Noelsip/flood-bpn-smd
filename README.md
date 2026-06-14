@@ -6,7 +6,8 @@ lalu dilatih dengan **AutoML (FLAML)** + Random Forest / XGBoost / CatBoost.
 
 - **Jenis data:** time series (cuaca berurutan → lag feature).
 - **Target:** klasifikasi biner banjir (0/1) di `t+3` → *Time Series Classification*, bukan forecasting nilai kontinu.
-- **Wilayah:** data banjir per-kecamatan (BPS) diikutkan sebagai konteks per kota.
+- **Lokasi:** `latitude`/`longitude` (titik per kota) dibawa apa adanya ke output prediksi (tidak ditransformasi).
+- **Kecamatan (hybrid):** data cuaca tidak punya dimensi kecamatan, jadi kecamatan terdampak dilampirkan ke output dari data historis banjir BPS per kecamatan (prior lokasi). Output prediksi = tanggal + kota + kecamatan + data.
 
 ## Jalankan di Google Colab (disarankan)
 
@@ -68,5 +69,7 @@ python scripts/build_notebooks.py               # -> Flood_AutoML_Tabular.ipynb
 - **Target** = banjir pada `t+3` (geser −3 per kota).
 - **Anti-leakage:** fitur hanya memakai data ≤ `t`; split **berbasis waktu** (70% awal / 30% akhir);
   imbalance (SMOTE / class weight) ditangani **hanya pada data latih, setelah split**.
+- `latitude`/`longitude` **tidak diolah** — hanya dibawa sebagai info lokasi ke output.
+- **Output** = tanggal, kota, kecamatan (dari historis BPS), jumlah banjir historis, koordinat kota, probabilitas.
 - Metrik utama: **Recall** & **AUC-PR** (lebih relevan dari accuracy untuk data sangat timpang;
   banjir ≈ 0,8% dari data).

@@ -11,10 +11,9 @@ Sesuai revisi dosen:
   - Target = Flood pada t+HORIZON (default 3 hari ke depan -> Flood_t+3).
   - Tidak ada kebocoran masa depan: fitur hanya memakai data <= t, target di t+3.
 
-Fitur "wilayah": data banjir per-kecamatan (clean/banjir_*.csv) diagregasi
-menjadi fitur per-kota (intensitas/keterpaparan banjir wilayah). Data ini hanya
-berisi tahun + jumlah, tanpa time series, jadi diperlakukan sebagai konteks
-statis per kota.
+Kolom `latitude` & `longitude` (titik lokasi per kota) dibiarkan apa adanya, tidak
+ditransformasi. Kolom ini dipakai sebagai info lokasi & dibawa ke output prediksi
+agar hasil prediksi menyertakan koordinat.
 
 Output: processed/dataset_timeseries.csv
 Jalankan:  python processed/build_timeseries_dataset.py
@@ -26,8 +25,6 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 PRIMARY_PATH = ROOT / "processed" / "dataset_utama.csv"
-BANJIR_BPP = ROOT / "clean" / "banjir_balikpapan.csv"
-BANJIR_SMD = ROOT / "clean" / "banjir_samarinda.csv"
 OUTPUT_PATH = ROOT / "processed" / "dataset_timeseries.csv"
 
 # Horizon peramalan: prediksi banjir berapa hari ke depan.
@@ -57,29 +54,6 @@ def load_primary() -> pd.DataFrame:
     df = df.rename(columns=WEATHER_COLS)
     df = df.sort_values(["city", "time"]).reset_index(drop=True)
     return df
-
-
-def load_region_features() -> pd.DataFrame:
-    """Agregasi data banjir per-kecamatan menjadi fitur per-kota (wilayah)."""
-    frames = []
-    for path in (BANJIR_BPP, BANJIR_SMD):
-        if path.exists():
-            frames.append(pd.read_csv(path))
-    if not frames:
-        return pd.DataFrame(columns=["city"])
-    banjir = pd.concat(frames, ignore_index=True)
-    region = (
-        banjir.groupby("kota")
-        .agg(
-            kec_flood_total=("banjir_count", "sum"),
-            kec_flood_max=("banjir_count", "max"),
-            kec_affected=("banjir_count", lambda s: int((s > 0).sum())),
-            kec_total=("banjir_count", "size"),
-        )
-        .reset_index()
-        .rename(columns={"kota": "city"})
-    )
-    return region
 
 
 def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -130,10 +104,6 @@ def build() -> pd.DataFrame:
     df = add_lag_features(df)
     df = add_rolling_features(df)
     df = add_target(df)
-
-    region = load_region_features()
-    if not region.empty:
-        df = df.merge(region, on="city", how="left")
 
     target_col = f"Flood_t+{FORECAST_HORIZON}"
     feature_cols = [c for c in df.columns if c.endswith(tuple(
