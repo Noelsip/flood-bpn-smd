@@ -11,18 +11,17 @@ lalu dilatih dengan **AutoML (FLAML)** + Random Forest / XGBoost / CatBoost.
 
 ## Jalankan di Google Colab (disarankan)
 
-```python
-!git clone <URL-REPO-GITHUB-MU>.git
-%cd machine-learning
-```
+Buka **`Flood_AutoML_Tabular.ipynb`**, isi `REPO_URL` di **Sel 0** dengan URL repo GitHub-mu,
+lalu jalankan sel dari atas ke bawah. Notebook **meng-clone repo sendiri** (mengambil seluruh
+kode + dataset), memasang dependensi, dan memilih `MODE` otomatis — tidak perlu upload dataset.
 
-Lalu buka **`Flood_AutoML_Tabular.ipynb`** dan jalankan sel dari atas ke bawah.
-Sel pertama memasang dependensi otomatis saat di Colab. Notebook memilih `MODE` sendiri:
+Data **DEM/RBI** tidak ikut di repo (terlalu besar); upload ZIP-nya lewat **Sel 3** hanya bila
+ingin jalur geospasial.
 
 | Data tersedia | `MODE` | Hasil |
 |---|---|---|
-| **DEM + RBI tidak ada** (default repo ini) | `timeseries` | Prediksi banjir `t+3` dari cuaca + banjir. |
-| **DEM + RBI ada** (extract zip ke `dem/`, `RBI/`, `padat-penduduk/`) | `geospatial` | Peta probabilitas banjir per kota. |
+| **DEM + RBI tidak ada** (default repo ini) | `timeseries` | Prediksi banjir `t+3` dari cuaca + banjir + output kota/kecamatan. |
+| **DEM + RBI ada** (upload ZIP di Sel 3) | `geospatial` | Peta probabilitas banjir per kota. |
 
 ## Jalankan lokal
 

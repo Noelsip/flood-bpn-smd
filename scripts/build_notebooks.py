@@ -41,62 +41,57 @@ yang ditransformasi jadi **time series** (lag `t-1..t-7` + akumulasi/rolling). B
 Sifat penelitian (untuk sidang): **data time series**, **target klasifikasi biner** banjir (0/1)
 → *Time Series Classification / Flood Forecasting Classification*, bukan forecasting nilai kontinu.
 
-### Cara pakai di Google Colab
-Notebook ini berdiri sendiri. Karena dari GitHub hanya file `.ipynb` yang terbaca, **upload ZIP**
-berisi data lewat sel di bawah:
-1. **ZIP dataset** (wajib): berisi `processed/dataset_timeseries.csv`
-   (boleh sertakan `processed/dataset_utama.csv` + `processed/build_timeseries_dataset.py` sebagai cadangan).
-2. **ZIP DEM + RBI** (opsional): berisi `dem/`, `RBI/`, `padat-penduduk/`, `clean/admin/`, `clean/penduduk_*.csv`,
-   `clean/banjir_*.csv` — hanya bila ingin jalur geospasial / peta probabilitas.
+### Urutan sel
+0. **Clone repository** — ambil semua kode + dataset dari GitHub (Colab).
+1. **Pasang dependensi** — termasuk library geospasial (DEM/RBI).
+2. **Import** — semua library di satu tempat.
+3. **Upload ZIP DEM + RBI** (opsional) — hanya bila ingin jalur geospasial.
+4. **Konfigurasi & deteksi MODE**.
+5–14. Pipeline: bangun tabel → eksplorasi → preprocessing → imbalance → model+AutoML →
+   evaluasi → output prediksi (kota+kecamatan) → feature importance → (geospasial) peta.
 
-`latitude` & `longitude` (titik per kota) dibawa apa adanya sebagai info lokasi dan disertakan di
-**output prediksi** (hasil prediksi memberi koordinat). `MODE` otomatis: ada DEM+RBI → `geospatial`, jika tidak → `timeseries`.""")
+`MODE` otomatis: ada DEM+RBI → `geospatial`, jika tidak → `timeseries`.""")
 
-    # ---------------------------------------------------------------- install
-    md("## 0. Pasang dependensi (otomatis di Colab)")
-    code("""import sys, subprocess
+    # ---------------------------------------------------------------- 0. clone repo
+    md("""## 0. Clone repository (Google Colab)
+Mengambil seluruh kode + dataset (`processed/`, `clean/`, dll) dari GitHub sehingga notebook
+tidak butuh file pendukung lain. **Ganti `REPO_URL`** dengan URL repo-mu. Data **DEM/RBI** tidak
+ikut di repo (terlalu besar) — itu di-upload terpisah pada sel 3.""")
+    code('''import os, sys, subprocess
+
+REPO_URL = "https://github.com/USERNAME/REPO.git"   # <-- GANTI dengan URL repo GitHub-mu
 
 def _in_colab():
     return "google.colab" in sys.modules
 
 if _in_colab():
+    repo_dir = REPO_URL.rstrip("/").split("/")[-1].replace(".git", "")
+    if not os.path.isdir(repo_dir):
+        subprocess.run(["git", "clone", REPO_URL], check=True)
+    os.chdir(repo_dir)
+    print("Repo di-clone. Direktori kerja:", os.getcwd())
+else:
+    print("Bukan Colab: memakai file repo lokal (tidak perlu clone).")''')
+
+    # ---------------------------------------------------------------- 1. install
+    md("""## 1. Pasang dependensi (otomatis di Colab)
+Memasang library inti **dan** geospasial (geopandas/rasterio) agar kedua mode siap.""")
+    code("""if _in_colab():
     subprocess.run([sys.executable, "-m", "pip", "install", "-q",
                     "numpy", "pandas", "scikit-learn", "xgboost", "catboost",
-                    "flaml[automl]", "imbalanced-learn", "matplotlib"], check=True)
-    print("Dependensi inti terpasang.")
+                    "flaml[automl]", "imbalanced-learn", "matplotlib",
+                    "geopandas", "rasterio", "shapely", "pyproj", "scipy"], check=True)
+    print("Dependensi (inti + geospasial) terpasang.")
 else:
     print("Bukan Colab: pastikan requirements.txt sudah terpasang.")""")
 
-    # ---------------------------------------------------------------- upload
-    md("""## 1. Upload ZIP data (jalankan bila file belum ada)
-Lewati bila kamu `git clone` seluruh repo. Bila hanya membuka `.ipynb` di Colab,
-jalankan sel berikut untuk meng-upload ZIP. Boleh pilih beberapa `.zip` sekaligus
-(ZIP dataset dan/atau ZIP DEM+RBI).""")
-    code("""import os, io, zipfile
+    # ---------------------------------------------------------------- 2. imports (semua)
+    md("""## 2. Import (semua library di satu tempat)
+Library inti selalu di-import; library geospasial (DEM/RBI) di-import dengan pengaman
+(`HAS_GEO_LIBS`) supaya mode time series tetap jalan walau geopandas/rasterio belum ada.""")
+    code("""import io, zipfile, warnings
 from pathlib import Path
 
-def upload_and_extract():
-    if not _in_colab():
-        print("Bukan Colab: lewati upload (pakai file dari repo).")
-        return
-    from google.colab import files
-    uploaded = files.upload()  # pilih satu/beberapa .zip
-    for fname, content in uploaded.items():
-        if fname.lower().endswith(".zip"):
-            with zipfile.ZipFile(io.BytesIO(content)) as z:
-                z.extractall(".")
-            print("Diekstrak:", fname)
-        else:
-            Path(fname).write_bytes(content)
-            print("Disimpan :", fname)
-
-# Jalankan baris berikut HANYA bila perlu upload:
-# upload_and_extract()
-print("Siap. Hapus komentar pada upload_and_extract() bila ingin upload ZIP.")""")
-
-    # ---------------------------------------------------------------- imports
-    md("## 2. Import & konfigurasi")
-    code("""import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -114,16 +109,64 @@ from catboost import CatBoostClassifier
 from flaml import AutoML
 
 warnings.filterwarnings("ignore")
+
+# --- imbalance (opsional) ---
 try:
     from imblearn.over_sampling import SMOTE
     HAS_SMOTE = True
 except Exception:
     HAS_SMOTE = False
 
+# --- geospasial DEM/RBI (opsional) ---
+for _k in ("PROJ_LIB", "PROJ_DATA", "GDAL_DATA"):
+    os.environ.pop(_k, None)
+try:
+    import pyproj
+    os.environ["PROJ_LIB"] = pyproj.datadir.get_data_dir()
+    import geopandas as gpd
+    import rasterio
+    from rasterio.transform import rowcol
+    from rasterio.warp import calculate_default_transform, reproject, Resampling
+    from rasterio.features import rasterize
+    from rasterio.mask import mask as rio_mask
+    from scipy.ndimage import distance_transform_edt
+    from shapely.geometry import Point, box
+    HAS_GEO_LIBS = True
+except Exception as _e:
+    HAS_GEO_LIBS = False
+    print("Library geospasial belum ada (mode geospatial nonaktif):", _e)
+
 SEED = 42
 np.random.seed(SEED)
+print("Import OK | SMOTE:", HAS_SMOTE, "| geospasial:", HAS_GEO_LIBS)""")
 
-def find_root(start: Path) -> Path:
+    # ---------------------------------------------------------------- 3. upload DEM/RBI
+    md("""## 3. Upload ZIP DEM + RBI (opsional)
+Hanya untuk **jalur geospasial**. ZIP harus berisi (pertahankan struktur folder):
+`dem/DEM SRTM 30M KALIMANTAN TIMUR.tif`, `RBI/KotaBalikpapan/...gdb`, `RBI/KotaSamarinda/...gdb`,
+`padat-penduduk/`. Lewati sel ini bila hanya menjalankan mode time series.""")
+    code("""def upload_dem_rbi():
+    if not _in_colab():
+        print("Bukan Colab: lewati upload (pakai file lokal bila ada).")
+        return
+    from google.colab import files
+    uploaded = files.upload()  # pilih ZIP DEM+RBI
+    for fname, content in uploaded.items():
+        if fname.lower().endswith(".zip"):
+            with zipfile.ZipFile(io.BytesIO(content)) as z:
+                z.extractall(".")
+            print("Diekstrak:", fname)
+        else:
+            Path(fname).write_bytes(content)
+            print("Disimpan :", fname)
+
+# Hapus komentar untuk upload ZIP DEM+RBI:
+# upload_dem_rbi()
+print("Lewati bila mode time series. Hapus komentar upload_dem_rbi() untuk jalur geospasial.")""")
+
+    # ---------------------------------------------------------------- 4. config + mode
+    md("## 4. Konfigurasi & deteksi MODE")
+    code("""def find_root(start: Path) -> Path:
     for c in [start, *start.parents]:
         if (c / "processed").exists() or (c / "clean").exists() or (c / "dem").exists():
             return c
@@ -153,7 +196,7 @@ POINTS_PER_EVENT, FLOOD_ELEV_QUANTILE, NONFLOOD_ELEV_QUANTILE, NONFLOOD_MIN_DIST
 GEO_NUM = ["elevation", "slope", "dist_river", "dist_road", "pop_density"]
 
 def geo_ready():
-    if not DEM_PATH.exists():
+    if not HAS_GEO_LIBS or not DEM_PATH.exists():
         return False
     for cfg in CITIES.values():
         if not all(Path(cfg[k]).exists() for k in ("gdb", "admin_kec", "admin_kel", "banjir", "penduduk")):
@@ -162,10 +205,10 @@ def geo_ready():
 
 MODE = "geospatial" if geo_ready() else "timeseries"
 print("Root proyek:", BASE_DIR)
-print("MODE:", MODE, "| SMOTE:", HAS_SMOTE)""")
+print("MODE:", MODE, "| SMOTE:", HAS_SMOTE, "| geospasial:", HAS_GEO_LIBS)""")
 
     # ---------------------------------------------------------------- builders (functions)
-    md("""## 3. Fungsi pembangun tabel model
+    md("""## 5. Fungsi pembangun tabel model
 Dua sumber, satu keluaran seragam `(data, info)` sehingga pipeline setelahnya identik.
 
 **A. Time series** — transformasi cuaca harian jadi lag `t-1..t-7` + akumulasi (hujan 3/7/14 hari,
@@ -230,13 +273,7 @@ time series tidak membutuhkannya.""")
 
 def build_geospatial_table():
     global CITY_LAYERS, LC_MAP
-    import geopandas as gpd, rasterio
-    from rasterio.transform import rowcol
-    from rasterio.warp import calculate_default_transform, reproject, Resampling
-    from rasterio.features import rasterize
-    from rasterio.mask import mask as rio_mask
-    from shapely.geometry import Point, box
-
+    # library geospasial sudah di-import di sel 2 (gpd, rasterio, rowcol, rasterize, dll).
     def _norm(s): return str(s).strip().lower()
     def read_gdb(gdb, layer):
         g = gpd.read_file(gdb, layer=layer); return (g.set_crs(WGS84) if g.crs is None else g).to_crs(UTM_CRS)
@@ -332,7 +369,7 @@ def build_geospatial_table():
 print("Fungsi geospasial siap.")''')
 
     # ---------------------------------------------------------------- RUN
-    md("""## 4. Jalankan proses (satu sel) — bangun tabel model
+    md("""## 6. Jalankan proses (satu sel) — bangun tabel model
 Memilih sumber otomatis sesuai `MODE`, lalu menghasilkan `data` + `info`. Pipeline di bawahnya identik.""")
     code("""if MODE == "timeseries":
     data, info = build_timeseries_table()
@@ -348,7 +385,7 @@ print(f"Positif (banjir): {pos}/{len(data)} ({pos/len(data)*100:.2f}%)")
 display(data.head(3))""")
 
     # ---------------------------------------------------------------- EDA
-    md("## 5. Eksplorasi singkat")
+    md("## 7. Eksplorasi singkat")
     code("""fig, ax = plt.subplots(1, 2, figsize=(13, 4))
 vc = data[TARGET].value_counts().sort_index()
 vc.rename({0: "Tidak Banjir", 1: "Banjir"}).plot(kind="bar", ax=ax[0], color=["#4C9F70", "#D1495B"])
@@ -371,7 +408,7 @@ for nm, fn in [("Balikpapan", "clean/banjir_balikpapan.csv"), ("Samarinda", "cle
         print(pd.read_csv(p).sort_values("banjir_count", ascending=False).to_string(index=False))""")
 
     # ---------------------------------------------------------------- preprocess + split
-    md("""## 6. Preprocessing & split
+    md("""## 8. Preprocessing & split
 Split **berbasis waktu** untuk time series (anti-leakage), **stratified** untuk geospasial.
 Scaler & encoder di-fit **hanya pada data latih**.""")
     code("""num_cols, cat_cols = info["num_cols"], info["cat_cols"]
@@ -397,7 +434,7 @@ print("Split:", info["split"], "| Train:", X_train.shape, "| Test:", X_test.shap
 print("Banjir train:", int(y_train.sum()), "| test:", int(y_test.sum()))""")
 
     # ---------------------------------------------------------------- imbalance
-    md("## 7. Penanganan imbalance — hanya pada data latih")
+    md("## 9. Penanganan imbalance — hanya pada data latih")
     code("""neg, pos = int((y_train == 0).sum()), int((y_train == 1).sum())
 spw = neg / max(pos, 1)
 if HAS_SMOTE and pos >= 6:
@@ -409,7 +446,7 @@ else:
 print("Imbalance:", method, "| sebaran y_fit:", dict(pd.Series(y_fit).value_counts().sort_index()))""")
 
     # ---------------------------------------------------------------- models + automl
-    md("## 8. Model baseline + AutoML (FLAML)")
+    md("## 10. Model baseline + AutoML (FLAML)")
     code("""models = {}
 models["Random Forest"] = RandomForestClassifier(
     n_estimators=400, random_state=SEED, n_jobs=-1, class_weight="balanced_subsample").fit(X_fit, y_fit)
@@ -433,7 +470,7 @@ models["AutoML (FLAML)"] = automl
 print("Estimator terbaik:", automl.best_estimator)""")
 
     # ---------------------------------------------------------------- eval
-    md("## 9. Evaluasi (fokus Recall & AUC-PR)")
+    md("## 11. Evaluasi (fokus Recall & AUC-PR)")
     code("""def proba(m, X):
     return np.asarray(m.predict_proba(X))[:, 1]
 rows, results = {}, []
@@ -470,7 +507,7 @@ plt.tight_layout(); plt.show()
 print(classification_report(y_test, best_pred, target_names=["Tidak Banjir", "Banjir"], zero_division=0))""")
 
     # ---------------------------------------------------------------- prediction output (kota+kecamatan)
-    md("""## 9b. Output prediksi: kota + kecamatan + data
+    md("""## 12. Output prediksi: kota + kecamatan + data
 **Mode time series:** model memprediksi *kapan* banjir per kota (`t+3`). Karena data cuaca tidak
 punya dimensi kecamatan, kecamatan terdampak dilampirkan dari **data historis banjir BPS per
 kecamatan** (sebagai prior lokasi, diurut dari yang paling sering banjir). Output: tanggal, kota,
@@ -508,7 +545,7 @@ else:
     print("Mode geospatial: output kecamatan/koordinat berupa peta probabilitas (sel 11).")""")
 
     # ---------------------------------------------------------------- importance + save
-    md("## 10. Feature importance & simpan hasil")
+    md("## 13. Feature importance & simpan hasil")
     code("""frames = []
 for name, m in models.items():
     imp = getattr(m, "feature_importances_", None)
@@ -526,13 +563,10 @@ res_df.to_csv(OUT_DIR / f"{info['mode']}_model_comparison.csv")
 print("Tersimpan:", OUT_DIR / f"{info['mode']}_model_comparison.csv")""")
 
     # ---------------------------------------------------------------- geospatial maps (extra)
-    md("""## 11. (Khusus geospasial) Peta probabilitas banjir per kota
+    md("""## 14. (Khusus geospasial) Peta probabilitas banjir per kota
 Hanya berjalan bila `MODE == "geospatial"`. Memprediksi probabilitas tiap sel grid DEM lalu
 menyimpan GeoTIFF + PNG.""")
     code("""if MODE == "geospatial":
-    import rasterio
-    from rasterio.features import rasterize
-    from scipy.ndimage import distance_transform_edt
     for name, lyr in CITY_LAYERS.items():
         dem, slope, tr = lyr["dem"], lyr["slope"], lyr["transform"]
         rivers, roads, landcover, desakel = lyr["rivers"], lyr["roads"], lyr["landcover"], lyr["desakel"]
