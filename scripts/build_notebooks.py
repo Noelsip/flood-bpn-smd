@@ -141,10 +141,17 @@ np.random.seed(SEED)
 print("Import OK | SMOTE:", HAS_SMOTE, "| geospasial:", HAS_GEO_LIBS)""")
 
     # ---------------------------------------------------------------- 3. upload DEM/RBI
-    md("""## 3. Upload ZIP DEM + RBI (opsional)
-Hanya untuk **jalur geospasial**. ZIP harus berisi (pertahankan struktur folder):
-`dem/DEM SRTM 30M KALIMANTAN TIMUR.tif`, `RBI/KotaBalikpapan/...gdb`, `RBI/KotaSamarinda/...gdb`,
-`padat-penduduk/`. Lewati sel ini bila hanya menjalankan mode time series.""")
+    md("""## 3. Upload ZIP DEM + RBI (opsional, satu ZIP gabungan)
+Hanya untuk **jalur geospasial**. Cukup **satu file ZIP** yang menggabungkan DEM dan RBI sekaligus,
+dengan struktur folder dipertahankan:
+```
+dem/DEM SRTM 30M KALIMANTAN TIMUR.tif
+RBI/KotaBalikpapan/RBI50K_KOTA BALIKPAPAN_KUGI50.gdb/...
+RBI/KotaSamarinda/RBI50K_KOTA SAMARINDA_KUGI50.gdb/...
+padat-penduduk/
+```
+Jika nama file/folder berbeda, sesuaikan `DEM_PATH` / `CITIES` di **Sel 4**.
+Lewati sel ini bila hanya menjalankan mode time series (cuaca + banjir).""")
     code("""def upload_dem_rbi():
     if not _in_colab():
         print("Bukan Colab: lewati upload (pakai file lokal bila ada).")
@@ -496,11 +503,29 @@ if y_test.nunique() > 1:
     ax[1].set_title("Precision-Recall"); ax[1].set_xlabel("Recall"); ax[1].set_ylabel("Precision"); ax[1].legend()
     plt.tight_layout(); plt.show()
 
-best_pred = (proba(best_model, X_test) >= 0.5).astype(int)
+# --- Tuning ambang keputusan (PENTING untuk data banjir yang sangat langka) ---
+# Pada ambang 0.5 model hampir selalu memprediksi 'tidak banjir' (Recall=0). Untuk sistem
+# peringatan dini, Recall lebih penting. Ambang dipilih dari DATA LATIH (bukan test, jadi tanpa
+# kebocoran test) untuk memaksimalkan F1, lalu dipakai sebagai ambang operasional di data uji.
+p_tr = proba(best_model, X_train)   # X_train = fitur latih ASLI (sebelum SMOTE)
+if y_train.nunique() > 1:
+    pr_t, rc_t, thr_t = precision_recall_curve(y_train, p_tr)
+    f1_t = 2 * pr_t * rc_t / (pr_t + rc_t + 1e-12)
+    OPER_THR = float(thr_t[int(np.nanargmax(f1_t[:-1]))]) if len(thr_t) else 0.5
+else:
+    OPER_THR = 0.5
+p_te = proba(best_model, X_test)
+print(f"Ambang operasional (F1-optimal dari data latih): {OPER_THR:.4f}")
+print(f"Test @0.50           -> Recall={recall_score(y_test, (p_te >= 0.5).astype(int), zero_division=0):.3f}")
+print(f"Test @{OPER_THR:.3f}  -> Recall={recall_score(y_test, (p_te >= OPER_THR).astype(int), zero_division=0):.3f}"
+      f" | Precision={precision_score(y_test, (p_te >= OPER_THR).astype(int), zero_division=0):.3f}"
+      f" | F1={f1_score(y_test, (p_te >= OPER_THR).astype(int), zero_division=0):.3f}")
+
+best_pred = (p_te >= OPER_THR).astype(int)
 cm = confusion_matrix(y_test, best_pred)
 fig, axc = plt.subplots(figsize=(4.5, 4)); axc.imshow(cm, cmap="Blues")
 axc.set_xticks([0, 1]); axc.set_xticklabels(["Tidak Banjir", "Banjir"]); axc.set_yticks([0, 1]); axc.set_yticklabels(["Tidak Banjir", "Banjir"])
-axc.set_xlabel("Prediksi"); axc.set_ylabel("Aktual"); axc.set_title(f"Confusion Matrix — {best_name}")
+axc.set_xlabel("Prediksi"); axc.set_ylabel("Aktual"); axc.set_title(f"Confusion Matrix — {best_name} (ambang {OPER_THR:.3f})")
 for (r, c), v in np.ndenumerate(cm):
     axc.text(c, r, str(v), ha="center", va="center", color="white" if v > cm.max()/2 else "black")
 plt.tight_layout(); plt.show()
@@ -513,36 +538,48 @@ punya dimensi kecamatan, kecamatan terdampak dilampirkan dari **data historis ba
 kecamatan** (sebagai prior lokasi, diurut dari yang paling sering banjir). Output: tanggal, kota,
 kecamatan, jumlah banjir historis, koordinat kota, dan probabilitas prediksi.""")
     code("""if MODE == "timeseries":
+    THR = OPER_THR if "OPER_THR" in dir() else 0.5   # pakai ambang operasional dari sel evaluasi
     id_cols = [c for c in info["id_cols"] if c in test_df.columns]
     pred_df = test_df[id_cols].copy()
     pred_df["flood_proba"] = proba(best_model, X_test)
-    pred_df["flood_pred"] = (pred_df["flood_proba"] >= 0.5).astype(int)
+    pred_df["flood_pred"] = (pred_df["flood_proba"] >= THR).astype(int)
     pred_df["flood_actual"] = y_test.values
     pred_df.to_csv(OUT_DIR / "timeseries_predictions_kota.csv", index=False)
 
     hot = pred_df[pred_df["flood_pred"] == 1]
     if hot.empty:
-        hot = pred_df.sort_values("flood_proba", ascending=False).head(5)
-        print("Tidak ada prediksi >= 0.5; menampilkan 5 hari paling berisiko.")
+        hot = pred_df.sort_values("flood_proba", ascending=False).head(10)
+        print("Tidak ada prediksi >= ambang; menampilkan 10 hari paling berisiko.")
 
-    kec_frames = [pd.read_csv(p) for p in (BASE_DIR/"clean"/"banjir_balikpapan.csv", BASE_DIR/"clean"/"banjir_samarinda.csv") if p.exists()]
+    # Lampirkan kecamatan dari data historis BPS (clean/banjir_*.csv).
+    # File ini ada di repo -> otomatis terbawa bila `git clone` (Sel 0). Kalau kecamatan NaN,
+    # berarti folder clean/ tidak ikut; pastikan repo ter-clone penuh atau sertakan clean/ di ZIP.
+    cand, seen, kec_frames = [], set(), []
+    for root in [BASE_DIR, Path.cwd(), BASE_DIR.parent]:
+        cand += [root / "clean" / "banjir_balikpapan.csv", root / "clean" / "banjir_samarinda.csv"]
+    for p in cand:
+        rp = Path(p).resolve()
+        if rp.exists() and rp not in seen:
+            seen.add(rp); kec_frames.append(pd.read_csv(rp))
     if kec_frames:
         kec = pd.concat(kec_frames, ignore_index=True).rename(columns={"kota": "city", "banjir_count": "banjir_historis"})
         out = hot.merge(kec[["city", "kecamatan", "banjir_historis"]], on="city", how="left")
         out = out.sort_values(["time", "city", "banjir_historis"], ascending=[True, True, False]).reset_index(drop=True)
     else:
         out = hot.assign(kecamatan=np.nan, banjir_historis=np.nan)
-        print("File clean/banjir_*.csv tidak ada -> kecamatan kosong. Upload data wilayah bila perlu.")
+        print("clean/banjir_*.csv tidak ditemukan -> kecamatan NaN. Pastikan folder clean/ ada (clone repo penuh).")
 
     cols = [c for c in ["time", "city", "kecamatan", "banjir_historis", "latitude", "longitude",
                         "flood_proba", "flood_pred", "flood_actual"] if c in out.columns]
     out = out[cols]
     out.to_csv(OUT_DIR / "timeseries_predictions_kecamatan.csv", index=False)
-    print(f"Output prediksi kota+kecamatan: {len(out)} baris. Contoh:")
+    caught = int(((pred_df["flood_pred"] == 1) & (pred_df["flood_actual"] == 1)).sum())
+    print(f"Hari diprediksi banjir: {int((pred_df['flood_pred']==1).sum())} | benar banjir (TP): {caught} dari {int(pred_df['flood_actual'].sum())} kejadian aktual")
+    print(f"Output kota+kecamatan: {len(out)} baris. Contoh:")
     display(out.head(30))
     print("Tersimpan:", OUT_DIR / "timeseries_predictions_kecamatan.csv")
 else:
-    print("Mode geospatial: output kecamatan/koordinat berupa peta probabilitas (sel 11).")""")
+    print("Mode geospatial: output kecamatan/koordinat berupa peta probabilitas (sel 14).")""")
 
     # ---------------------------------------------------------------- importance + save
     md("## 13. Feature importance & simpan hasil")
