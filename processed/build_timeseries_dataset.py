@@ -5,11 +5,16 @@ Output:
     processed/dataset_timeseries.csv
 
 Split policy:
-    - test  = Balikpapan/Samarinda rows with time >= 2023-01-01
+    - test       = Balikpapan/Samarinda rows with time >= 2023-01-01
+    - validation = full Balikpapan/Samarinda rows from 2021-01-01 to 2022-12-31
     - train = all external-city rows from all available years + Balikpapan/Samarinda before 2023
 
-Training negatives are downsampled to 2:1 (negative:positive), prioritized from
-the 21 days before flood-target windows in the same city.
+Training negatives are downsampled to 5:1 (negative:positive): up to 2:1 from
+the 21 days before flood-target windows, then the rest from normal/background
+non-flood days.
+
+Target:
+    Flood_next_3d = 1 if flood occurs any time in the next 1..3 days.
 """
 from pathlib import Path
 
@@ -25,10 +30,13 @@ DATASET_DIR = ROOT / "dataset"
 FLOOD_DIR = ROOT / "banjir"
 
 HORIZON = 3
+TARGET_COL = "Flood_next_3d"
 LAGS = 7
 SEED = 42
 SPLIT_CUTOFF_DATE = "2023-01-01"
-UNDERSAMPLE_RATIO = 2
+VALIDATION_START_DATE = "2021-01-01"
+UNDERSAMPLE_RATIO = 5
+PREFLOOD_NEG_RATIO = 2
 NEGATIVE_LOOKBACK_DAYS = 21
 EASY_NEG_PERCENTILE = 50
 KALTIM_CITY_NAMES = ["Kota Balikpapan", "Kota Samarinda"]
@@ -155,8 +163,9 @@ def make_features(daily: pd.DataFrame) -> pd.DataFrame:
     df["precip7_pctl"] = df.groupby("city")["precip_roll7_sum"].transform(expanding_percentile)
     df["soil7_pctl"] = df.groupby("city")["soil_roll7_mean"].transform(expanding_percentile)
 
-    target = f"Flood_t+{HORIZON}"
-    df[target] = grouped["Flood"].shift(-HORIZON)
+    target = TARGET_COL
+    future = [grouped["Flood"].shift(-step) for step in range(1, HORIZON + 1)]
+    df[target] = pd.concat(future, axis=1).max(axis=1)
     df = df.dropna(subset=FEATURES + [target]).reset_index(drop=True)
     df[target] = df[target].astype(int)
     return df
@@ -168,6 +177,7 @@ def select_balanced_train(train_pool: pd.DataFrame, target: str) -> tuple[pd.Dat
     pos_idx = np.where(y == 1)[0]
     neg_idx = np.where(y == 0)[0]
     target_neg = UNDERSAMPLE_RATIO * len(pos_idx)
+    target_preflood = min(PREFLOOD_NEG_RATIO * len(pos_idx), target_neg)
 
     preflood_mask = np.zeros(len(train_pool), dtype=bool)
     for _, group in train_pool.groupby("city", sort=False):
@@ -187,7 +197,7 @@ def select_balanced_train(train_pool: pd.DataFrame, target: str) -> tuple[pd.Dat
 
     selected = []
     if len(preflood_neg):
-        selected.extend(rng.choice(preflood_neg, size=min(target_neg, len(preflood_neg)), replace=False).tolist())
+        selected.extend(rng.choice(preflood_neg, size=min(target_preflood, len(preflood_neg)), replace=False).tolist())
     need = target_neg - len(selected)
     if need > 0 and len(hard_neg):
         selected.extend(rng.choice(hard_neg, size=min(need, len(hard_neg)), replace=False).tolist())
@@ -216,16 +226,20 @@ def build() -> pd.DataFrame:
 
     daily = pd.concat(daily_frames, ignore_index=True).sort_values(["city", "time"]).reset_index(drop=True)
     ts = make_features(daily)
-    target = f"Flood_t+{HORIZON}"
+    target = TARGET_COL
     cutoff = pd.Timestamp(SPLIT_CUTOFF_DATE)
     is_kaltim = ts["city"].isin(KALTIM_CITY_NAMES)
 
-    train_pool = ts[(~is_kaltim) | (ts["time"] < cutoff)].copy().reset_index(drop=True)
+    validation_start = pd.Timestamp(VALIDATION_START_DATE)
+    is_validation = is_kaltim & (ts["time"] >= validation_start) & (ts["time"] < cutoff)
+    train_pool = ts[(~is_kaltim) | (ts["time"] < validation_start)].copy().reset_index(drop=True)
+    validation = ts[is_validation].copy().reset_index(drop=True)
     test = ts[is_kaltim & (ts["time"] >= cutoff)].copy().reset_index(drop=True)
     train, stats = select_balanced_train(train_pool, target)
     train["split"] = "train"
+    validation["split"] = "validation"
     test["split"] = "test"
-    out = pd.concat([train, test], ignore_index=True).sort_values(["split", "time", "city"]).reset_index(drop=True)
+    out = pd.concat([train, validation, test], ignore_index=True).sort_values(["split", "time", "city"]).reset_index(drop=True)
     print("balance train:", stats)
     return out
 
@@ -234,7 +248,7 @@ def main() -> None:
     df = build()
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(OUTPUT_PATH, index=False)
-    target = f"Flood_t+{HORIZON}"
+    target = TARGET_COL
     print(f"saved : {OUTPUT_PATH}")
     print(f"rows  : {len(df)} | cols: {df.shape[1]}")
     print(df.groupby(["split", "city"])[target].agg(["count", "sum"]).to_string())
