@@ -1,0 +1,155 @@
+id,Tanggal / Waktu Kejadian,Minggu,Bulan,Tahun,Kode Provinsi,Provinsi,Kode Kabupaten,Kabupaten,Kode Jenis Kejadian,Nama Kejadian,Jenis Bencana,is_bencana,Jumlah Kejadian,Meninggal,Hilang,Luka / Sakit,menderita_mengungsi,Rumah Rusak Berat,Rumah Rusak Sedang,Rumah Rusak Ringan,Rumah Terendam,Satuan Pendidikan Rusak,Rumah Ibadat Rusak,Fasilitas Pelayanan Kesehatan Rusak,Kantor Rusak,Jembatan Rusak
+3cb76be1-a0f5-4137-a103-a462d256c73d,2026-05-19 21:30:00.864,21,5,2026,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1150,0,0,0,230,0,0,0,0,0
+1ef467f8-f094-484a-8396-fb33a454a790,2026-05-19 20:00:00.932,21,5,2026,35,Jawa Timur,35.14,Pasuruan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,5601,0,0,0,1867,0,0,0,0,0
+0766eba4-9294-4ade-a979-485c07502dea,2026-04-21 17:57:00.979,17,4,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6775,0,0,0,1355,0,0,0,0,0
+bdc35a92-4243-4553-a5f4-d2c418ac965b,2026-04-21 17:40:00.569,17,4,2026,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,500,0,0,0,100,0,0,0,0,0
+4800a342-5443-4b42-864a-7be37a85c4f4,2026-04-12 16:00:00.361,15,4,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3700,0,0,0,740,0,0,0,0,0
+02d212b6-3061-4279-8010-29bd3ec9aaeb,2026-03-24 14:00:00.964,13,3,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,19835,0,0,0,6456,0,0,0,0,0
+e6aab2b5-5a34-4323-9e5e-f379bf8ac11a,2026-03-21 19:00:00.966,12,3,2026,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,500,0,0,0,500,0,0,0,0,0
+15bd08b7-eaf2-4999-ba34-e2491bab726c,2026-03-19 15:00:00.117,12,3,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,11311,0,0,0,2260,0,0,0,0,0
+81f7cce2-1a8a-493e-b4dc-9959fc79faa8,2026-03-02 17:00:00.694,10,3,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4835,0,0,0,967,0,0,0,0,0
+a52cd6d4-844a-4279-b92a-ed52f33a8109,2026-02-21 19:30:00.009,8,2,2026,35,Jawa Timur,35.14,Pasuruan,1016,Banjir Genangan,Banjir,True,1.0,0,0,0,2125,0,0,0,425,0,0,0,0,0
+a6037033-d32a-4aab-b930-29097d12e028,2026-02-14 16:00:00.874,7,2,2026,35,Jawa Timur,35.14,Pasuruan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,11815,0,0,0,2363,0,0,0,0,0
+c388428c-2b72-4b0d-954b-2e0e019eb5bc,2026-01-20 18:30:00.416,4,1,2026,35,Jawa Timur,35.14,Pasuruan,1016,Banjir Genangan,Banjir,True,1.0,0,0,0,4995,0,0,0,999,0,0,0,0,0
+9b4d1cae-8f5d-48a0-a59c-2b0f2bcc6aef,2026-01-20 13:00:00.454,4,1,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,18025,0,0,0,3605,0,0,0,0,0
+048b5603-71d8-458e-99b2-8349fbd44c45,2026-01-09 14:50:00.827,2,1,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6140,0,0,0,1228,0,0,0,0,0
+80019ab9-d3df-4d50-a6d0-caafedcba03b,2026-01-03 16:00:00.482,1,1,2026,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,11055,0,0,0,2211,0,0,0,0,0
+90510e48-10bf-46c1-ae67-39a7f2cee455,2025-12-31 19:00:00.999,1,12,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,110,0,0,22,0,0,0,0,0,0
+81c7dc13-da5c-40e8-8fce-8fe6c0668bcb,2025-12-14 18:30:00.780,50,12,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5975,0,0,0,1195,0,0,0,0,0
+baa1a90c-e0e3-4b31-a159-edc4d5f7da39,2025-12-11 07:00:00.245,50,12,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5975,0,0,0,1195,0,0,0,0,0
+b7a28d67-8ce3-42a8-9b4c-5ceadcd90824,2025-12-09 20:00:00.948,50,12,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,255,0,0,0,0,0,0,0,0,0
+47ed0271-94b9-4632-b20f-7f8a8684bc2b,2025-12-05 13:00:00.247,49,12,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1260,0,0,0,252,0,0,0,0,0
+f2a53519-d927-49b4-a451-b596aa5d91ca,2025-12-02 19:00:00.239,49,12,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,300,0,0,0,60,0,0,0,0,0
+b10041b8-b170-47b6-bfe0-5a99672d80a7,2025-11-24 17:32:00.121,48,11,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2700,0,0,0,540,0,0,0,0,0
+c0ea6e75-e695-4b70-8cd8-5131155f2d00,2025-11-24 16:00:00.188,48,11,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5500,0,0,0,1100,0,0,0,0,0
+55ed1081-b139-49a7-896f-e42aebd512ac,2025-11-19 18:10:00.641,47,11,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,10300,0,0,0,2060,0,0,0,0,0
+25c8b696-0631-4923-9a5a-e4f20fa79bdd,2025-11-10 16:00:00.878,46,11,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,7250,0,0,0,14350,0,0,0,0,0
+a72aded0-406a-4b86-b82c-7e1f2227015c,2025-11-07 21:40:00.346,45,11,2025,35,Jawa Timur,35.75,Kota Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,1714,0,0,0,548,0,0,0,0,0
+1ff8be35-faff-4d5d-bb9f-bd5267239cbd,2025-11-07 20:00:00.723,45,11,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,200,0,0,0,40,0,0,0,0,0
+7bb42014-7046-40e1-8f10-46e06b2ee265,2025-11-01 23:50:00.781,44,11,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,60,0,0,0,12,0,0,0,0,0
+76a3aac9-6126-471b-bc9b-4a24ab5c7d65,2025-05-25 03:00:00.000,21,5,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,7420,0,0,0,1484,0,0,0,0,0
+b04d3d8c-2f36-4215-824b-68cb662449bc,2025-05-12 17:30:00.000,20,5,2025,35,Jawa Timur,35.14,Pasuruan,1016,Banjir Genangan,Banjir,True,1.0,0,0,0,5245,0,0,0,1049,0,0,0,0,0
+c11af52d-4ad2-4862-8b48-b069aa5d9c85,2025-04-01 15:30:00.000,14,4,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5665,0,0,0,1133,0,0,0,0,0
+8ed995de-7408-481a-b588-4fb0af0b424f,2025-03-28 17:50:00.000,13,3,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,590,0,0,0,118,0,0,0,0,0
+80cabf5d-3df0-4bb1-bcf6-0437835039f1,2025-03-28 15:00:00.000,13,3,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,9715,0,0,0,1540,0,0,0,0,0
+fb7e7514-f0c2-4be7-bd81-bb2d8d7ae9f5,2025-02-24 14:30:00.000,9,2,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,15255,0,0,0,3051,0,0,0,0,0
+a6abd370-0e42-4d51-9de8-ed0150e9ac07,2025-02-22 14:00:00.000,8,2,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2050,0,0,0,0,0,0,0,0,0
+bc1a984e-febf-4cb9-b97c-3743fe5b7091,2025-02-17 14:00:00.000,8,2,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2392,0,0,0,867,0,0,0,0,0
+46c1f64d-30e3-4cbc-bd78-0774c689bb46,2025-01-28 19:00:00.000,5,1,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,28300,0,0,0,5585,0,0,0,0,0
+a3bd75d1-5438-4b1a-ad0e-bd34d1190018,2025-01-27 20:35:00.000,5,1,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,8835,0,0,0,1269,0,0,0,0,0
+213090f0-b23a-4276-a040-ba3755d5b86d,2025-01-26 07:00:00.000,4,1,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1965,0,0,0,393,0,0,0,0,0
+944a2d23-55e5-4d08-b68a-a5235262b02d,2025-01-20 16:30:00.000,4,1,2025,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,221,0,0,0,108,0,0,0,0,0
+6fefd606-83ca-4df2-9d1a-39e6c156ff1f,2025-01-16 01:00:00.000,3,1,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,36100,0,0,0,7151,0,0,0,0,0
+a70c38aa-b3bd-4452-a3dc-691359231a88,2025-01-02 10:00:00.000,1,1,2025,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3700,0,0,0,740,0,0,0,0,0
+4edc6794-73d8-441f-b7c7-10fcb9001e5a,2024-12-31 15:00:00.000,1,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,7235,0,0,0,1447,0,0,0,0,0
+5c26c970-bd33-462c-99f6-245416924da8,2024-12-31 14:00:00.000,1,12,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1505,0,0,0,0,0,0,0,0,0
+693e6bbc-17b8-405b-a1f7-341bbe58c1c0,2024-12-20 20:03:00.000,51,12,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,490,0,0,0,98,0,0,0,0,0
+91e76ddb-c3c8-4f69-afa4-e7242143a972,2024-12-20 20:00:00.000,51,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1250,0,0,0,250,0,0,0,0,0
+d624f771-9391-45f8-9d59-2bc4df505699,2024-12-17 14:40:00.000,51,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,16425,0,0,0,3254,0,0,0,0,0
+6a43e463-bd65-4a71-946b-38b7daa0d067,2024-12-14 20:00:00.000,50,12,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1714,0,0,0,548,0,0,0,0,0
+c4a5cf5e-28a6-429c-9a69-cb7eaa92cc43,2024-12-13 19:12:00.000,50,12,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,690,0,0,0,105,0,0,0,0,0
+9be006f9-2013-4e21-82f4-cd4fa0c44dda,2024-12-12 15:30:00.000,50,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6810,0,0,0,1512,0,0,0,0,0
+dc622fcc-0b5d-4b1b-b256-7decc338ea58,2024-12-06 16:30:00.000,49,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,435,0,0,0,0,0,0,0,0,0
+8f8bea76-0780-4643-af82-74527454b0a6,2024-12-05 19:00:00.000,49,12,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5230,0,0,0,0,0,0,0,0,0
+19e29971-b553-48eb-ab2d-a00d079e3308,2024-12-05 17:00:00.000,49,12,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,23921,0,0,0,4607,0,0,0,0,0
+ca99aedb-bef9-41f9-b000-802c2a98201d,2024-04-07 22:00:00.000,14,4,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,1,0,0,10230,0,0,0,0,0,0,0,0,0
+2e49bbec-1033-4a7b-adb7-182a1e15f4cd,2024-04-07 15:00:00.000,14,4,2024,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,1,0,0,5560,0,0,0,428,0,0,0,0,0
+683337f4-a0d1-4014-978d-06de888e29ad,2024-03-20 16:50:00.000,12,3,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5560,0,0,0,0,0,0,0,0,0
+631e0184-4f6a-4772-8dd5-1cbb75dd8426,2024-03-16 19:30:00.000,11,3,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,810,0,0,0,270,0,0,0,0,0
+35d7b115-a79f-489c-b465-bbc3fbc27de6,2024-03-08 14:00:00.000,10,3,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,22030,0,0,0,2610,0,0,0,0,0
+418f713d-cde8-4575-8e9b-99d80ab9f66b,2024-02-16 19:45:00.000,7,2,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4450,0,0,0,875,0,0,0,0,0
+46629c63-ce8a-4f85-88d8-2381f693690b,2024-02-04 18:00:00.000,5,2,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,8460,0,0,0,1835,0,0,0,0,0
+a6f934ab-3db4-452b-aa10-e7a5e61e1cae,2024-01-27 17:30:00.000,4,1,2024,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1370,0,0,0,214,0,0,0,0,0
+e6411fe2-1e4e-41f2-8074-000deda41393,2023-03-01 20:40:00.000,9,3,2023,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6160,0,0,0,1232,0,0,0,0,0
+fa7cb30c-2265-45b6-9f47-b8e154cdde1c,2023-02-21 15:30:00.000,8,2,2023,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+3c79b457-6e93-4705-ac32-29526a0c2ed9,2023-02-16 19:00:00.000,7,2,2023,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,176,0,0,0,60,0,0,0,0,0
+7f80f2c3-b289-44e7-9e1e-cf6df31bbb31,2023-02-09 17:00:00.000,6,2,2023,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,43310,0,0,0,4919,0,0,0,0,0
+a20a6648-454f-4e57-a54f-246faf327922,2023-02-01 17:00:00.000,5,2,2023,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,12884,0,0,0,1205,0,0,0,0,0
+8d7e96e3-3d8e-4175-b0f3-b7f73e84ed2e,2022-11-18 15:00:00.000,46,11,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1925,0,0,0,385,0,0,0,0,0
+63d00fed-18a8-4e98-9484-98bb79cec80d,2022-11-17 18:00:00.000,46,11,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,11325,0,0,0,2265,0,0,0,0,0
+04a9ba1d-f88d-4c93-91d2-5a23fa80ac86,2022-08-14 23:00:00.000,32,8,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2325,0,1,0,465,1,0,0,0,0
+df4310b3-a1e3-4ccd-935c-7eb468a3571a,2022-07-14 09:35:00.000,28,7,2022,35,Jawa Timur,35.14,Pasuruan,1011,Banjir Rob,Banjir,True,0.5,0,0,0,30,0,0,0,10,0,0,0,0,0
+5027bf60-bf9a-4670-a783-2694dd615813,2022-07-14 08:30:00.000,28,7,2022,35,Jawa Timur,35.14,Pasuruan,1011,Banjir Rob,Banjir,True,0.5,0,0,0,1025,0,0,0,170,0,0,0,0,0
+bdfa4d54-b886-49d7-b9c3-dd971163e21a,2022-05-20 11:00:00.000,20,5,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,800,0,0,0,160,0,0,0,0,0
+ee2f226e-db7e-4954-91b4-759c2e3b022e,2022-05-19 12:00:00.000,20,5,2022,35,Jawa Timur,35.14,Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,35,7,0,0,0,0,1,0,0,0
+c9d708bd-9e34-4ee2-9d7f-ecf4ee78befd,2022-05-18 10:10:00.000,20,5,2022,35,Jawa Timur,35.75,Kota Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,440,0,0,0,62,0,0,0,0,0
+6b7bce66-eedc-4435-bfd2-f50195b80045,2022-05-09 22:00:00.000,19,5,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,12020,0,0,0,2065,0,0,0,0,0
+a9611941-0295-4e3d-8df3-5d6c190cf57f,2022-04-01 21:00:00.000,13,4,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,899,0,0,0,253,0,0,0,0,0
+5d12f7a3-1c77-467c-9b03-37f8912f26ee,2022-03-29 23:30:00.000,13,3,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,11910,0,0,0,2382,0,0,0,0,0
+4ea20cab-c8b4-47f9-ad29-a164052dc21e,2022-03-28 21:50:00.000,13,3,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1690,0,0,0,338,0,0,0,0,0
+115fac84-96ef-4917-9af4-91fc87e2ae7d,2022-03-27 15:00:00.000,12,3,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1375,0,0,0,275,0,0,0,0,0
+8aeb6d94-a076-4104-b2ea-cb88ca6f6854,2022-03-24 21:30:00.000,12,3,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1905,0,0,0,381,0,0,0,0,0
+05572ef4-e2ff-46e4-bfc2-8ca3cd233a18,2022-03-21 18:10:00.000,12,3,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,335,0,0,0,78,0,0,0,0,0
+50eceb13-e116-4cc4-bc02-1b5f3dc89bee,2022-03-08 18:00:00.000,10,3,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,27920,0,6,0,5584,0,0,0,0,1
+83c000d7-a6b2-49b6-bb4d-e093480ee5e5,2022-03-08 18:00:00.000,10,3,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,620,0,0,0,206,0,0,0,0,0
+b21cbcf8-fe95-4dac-8ab5-d2110a104bdb,2022-03-04 16:40:00.000,9,3,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1850,0,0,0,370,0,0,0,0,0
+5048b416-8b7f-475b-b43f-2b6abd148359,2022-02-25 16:40:00.000,8,2,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,100,0,0,0,25,0,0,0,0,0
+0bc2df06-e1c7-4e70-8b4e-f8b5d0c1090b,2022-02-06 15:30:00.000,5,2,2022,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1206,0,0,0,366,0,0,0,0,0
+4a88db73-d069-46b1-b05f-45c6f083ec8d,2022-02-05 17:00:00.000,5,2,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,38585,0,0,0,7717,0,0,0,0,0
+617aaeff-8d54-45fb-9c9d-d0666e016222,2022-01-20 21:30:00.000,3,1,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,1000,0,0,0,200,0,0,0,0,0
+3335421d-2d2a-48f1-8f96-ad6d28dc4705,2022-01-20 20:00:00.000,3,1,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,60,0,0,0,15,0,0,0,0,0
+ccca9e0e-b190-4026-ab86-64d7dfb0cdfd,2022-01-18 16:00:00.000,3,1,2022,35,Jawa Timur,35.75,Kota Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,90,0,0,0,18,0,0,0,0,0
+80b3823d-a8e8-4657-9d48-1ece9a719f1f,2022-01-10 19:00:00.000,2,1,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,1840,0,0,0,368,0,0,0,0,0
+b31c4f12-3402-4124-94a8-6e95cbabec29,2022-01-10 19:00:00.000,2,1,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,55100,0,0,9,6908,0,0,0,0,0
+92360833-4e86-476a-a2ad-d1c8cdb0356f,2022-01-09 13:00:00.000,1,1,2022,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6550,0,0,1,676,0,0,0,0,0
+9d40284a-20e0-4249-b902-d105fcf3a3dd,2022-01-04 23:30:00.000,1,1,2022,35,Jawa Timur,35.75,Kota Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,55,0,0,0,11,0,0,0,0,0
+535b8b3d-ec41-4f87-ac96-139c48175b95,2021-12-10 13:00:00.000,49,12,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4495,0,0,0,899,0,0,0,0,0
+2d925148-ca49-419c-87cd-5aea38b4bbfd,2021-12-04 15:00:00.000,48,12,2021,35,Jawa Timur,35.14,Pasuruan,1016,Banjir Genangan,Banjir,True,1.0,0,0,0,11470,0,0,0,2294,0,0,0,0,0
+a5dae798-0384-4338-87ad-00e39ccd479a,2021-12-03 22:30:00.000,48,12,2021,35,Jawa Timur,35.75,Kota Pasuruan,1011,Banjir Rob,Banjir,True,1.0,0,0,0,125,0,0,0,25,0,0,0,0,0
+37fa88bd-e318-4767-b5eb-b7efdec2b259,2021-11-30 01:30:00.000,48,11,2021,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4722,0,0,0,912,0,0,0,0,0
+0866908e-7a14-4175-b2cd-68788d71e91a,2021-11-27 19:00:00.000,47,11,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,45,0,0,0,0,0,0,0,0,0
+25f2deba-b193-49ba-9be9-5f57d6e019eb,2021-11-25 13:00:00.000,47,11,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,500,0,0,2,100,0,0,0,0,0
+484cad75-7a79-4b7f-97d4-5d2c2e2f919d,2021-04-02 05:00:00.000,13,4,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,11945,0,0,0,2970,0,0,0,0,0
+8b00f5cb-e479-49ab-8eeb-2aa3990bf3eb,2021-03-26 14:00:00.000,12,3,2021,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,1116,0,0,0,279,0,0,0,0,0
+52e04ad2-796b-48bd-b172-ed9aaf522f97,2021-03-13 21:30:00.000,10,3,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,156,0,0,0,60,0,0,0,0,0
+d5cfcbdb-fde8-4ded-b0bf-75038cee86b6,2021-03-07 19:00:00.000,9,3,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,200,0,0,0,40,0,0,0,0,0
+8ddcd55e-6c0b-4dde-930d-0b9144d556dd,2021-03-03 20:00:00.000,9,3,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,450,0,0,0,90,0,0,0,0,0
+25f5b29b-26da-4a59-b0b6-f16cb7496606,2021-02-14 23:50:00.000,6,2,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,16362,0,0,0,3201,0,0,0,0,0
+b367ce2d-79dc-4417-b861-c4c9421cafbe,2021-02-03 18:30:00.000,5,2,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,2,1,0,11715,8,0,0,0,0,0,0,0,0
+4b8bf039-c2c4-469c-ba01-c4d730f62dfb,2021-01-10 16:15:00.000,1,1,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4325,0,0,0,865,0,0,0,0,0
+cc8b1448-c281-436a-aa48-15b6b4a34a82,2021-01-05 18:00:00.000,1,1,2021,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,13584,0,0,0,2710,0,0,0,0,0
+a82623fa-2c7f-4cbc-a3c1-b405e72c05d7,2021-01-05 16:00:00.000,1,1,2021,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,8410,0,0,0,1682,0,0,0,0,0
+ec910a70-c387-4cd2-afb9-ab3e17973d57,2020-12-30 18:00:00.000,53,12,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3675,0,0,0,885,0,0,0,0,0
+bb8db9e8-c8b7-4e67-857c-eac3ec6c3b08,2020-12-12 07:00:00.000,50,12,2020,35,Jawa Timur,35.14,Pasuruan,1013,Banjir dan Tanah Longsor,Banjir,True,1.0,0,0,0,2945,0,0,0,0,0,0,0,0,0
+b6bcf717-0113-4ae7-8acc-e9be0d110490,2020-11-01 21:00:00.000,44,11,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,31895,0,0,0,4979,0,0,0,0,0
+603853c9-8f9f-4d90-97f1-ba28d65e0e42,2020-10-31 17:15:00.000,44,10,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,31895,0,0,0,6379,0,0,0,0,0
+e80c3e41-563b-4b5e-b0e1-9b4a2df197d3,2020-10-31 14:30:00.000,44,10,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,0.5,0,0,0,0,0,0,0,642,0,0,0,0,0
+bf5c89f1-5574-4733-9173-cf7800f977c3,2020-03-04 15:00:00.000,10,3,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2750,0,0,0,550,0,0,0,0,0
+8d14a996-044a-46ed-b384-4f8b61061ce4,2020-02-26 16:00:00.000,9,2,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,48575,0,0,0,9715,0,0,0,0,0
+0716d8ff-9fa1-4a0f-839e-b04f9a7b8fb6,2020-02-18 16:00:00.000,8,2,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,675,0,0,0,135,0,0,0,0,0
+da040906-d195-4894-a39d-2ae0bc2f5f53,2020-02-03 23:00:00.000,6,2,2020,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,80,0,0,0,0,0
+17630101-9c0c-42ee-88dd-7005a9fdf465,2020-01-07 19:00:00.000,2,1,2020,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,41340,0,0,0,8628,0,0,0,0,0
+cb6a84e5-191d-41cb-b789-a8e9d7ed497f,2019-04-28 01:10:00.000,17,4,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,10000,0,1,0,2000,0,0,0,0,0
+a4645028-85ec-42fb-9ec7-bef9a8bee66d,2019-03-20 19:00:00.000,12,3,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,925,0,0,0,185,0,0,0,0,0
+0d3334ec-21b0-4fcb-8787-274f9cd547a1,2019-03-19 16:00:00.000,12,3,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,950,0,0,0,190,0,0,0,0,0
+4df7d8cb-79cd-4c9d-9f4a-f535f436dcfd,2019-02-12 23:35:00.000,7,2,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,1429,0,0,0,0,0
+12e46402-06ea-4f9e-80ca-77dde6c8a315,2019-02-04 17:45:00.000,6,2,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,8675,0,0,0,0,0,0,0,0,0
+1e990285-c380-4742-8e3c-6bb371b9d097,2019-01-15 07:00:00.000,3,1,2019,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,0,0,0,0,0,0
+49fd4110-4f8a-4568-b2c6-f41ad1da5346,2018-03-22 00:01:00.000,12,3,2018,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4993,0,0,0,0,0,0,0,0,0
+aa978256-78da-46d7-8ef9-91575c99cde9,2018-03-13 00:01:00.000,11,3,2018,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,19545,0,0,0,3909,0,0,0,0,0
+5736d3f0-cc72-4433-a410-2bb853d8ff3b,2018-01-07 00:01:00.000,1,1,2018,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,2630,0,0,0,0,0
+a445b52c-d396-40b5-a902-8a5f2fbcc089,2017-12-11 08:08:08.000,50,12,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,5000,0,0,0,0,0,0,0,0,0
+35f2bce0-4019-40d1-b305-0c8a83e16e0a,2017-11-28 08:08:08.000,48,11,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,10500,0,0,0,0,0,0,0,0,0
+75f81928-31d1-4e57-a567-b4baf9ff5f29,2017-11-21 08:08:08.000,47,11,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,1200,0,0,0,0,0
+1ec7fc6b-f09a-4c40-b2cf-e364aae266f6,2017-11-21 08:08:08.000,47,11,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,500,0,0,0,0,0
+549b8912-361f-4775-8d7c-58a5de78fef9,2017-03-25 08:08:08.000,12,3,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4500,0,0,0,0,0,0,0,0,0
+ea6b4274-2eee-46f7-ac26-2c9abb957276,2017-03-02 08:08:08.000,9,3,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,2506,0,0,0,805,0,0,0,0,0
+d09d5829-f9ad-4008-b1fd-c7ecb54c1abc,2017-02-28 08:08:08.000,9,2,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,1300,0,0,0,0,0
+5e4b82df-4b45-4fd3-b108-6a6d859885a0,2017-02-28 08:08:08.000,9,2,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,8244,0,0,0,0,0,0,0,0,0
+79d5ce35-dfc3-4fc9-ad51-ea704ec2e5fc,2017-01-30 08:08:08.000,5,1,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,10000,0,0,0,1400,0,0,0,0,0
+3d2d435a-242f-4988-b5f3-1bdb6a874c14,2017-01-25 08:08:08.000,4,1,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,25210,0,0,0,5042,0,0,0,0,0
+49680a17-d25b-49b2-9167-75f965e08a39,2017-01-24 08:08:08.000,4,1,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,1,0,30,0,0,0,0,0,0,0,0,0
+1cfd31ff-7308-44ec-8366-504c26916e80,2017-01-11 08:08:08.000,2,1,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,27500,0,0,0,0,0,0,0,0,0
+53dda0a4-b85d-4e96-bf1c-90d68e32c045,2017-01-11 08:08:08.000,2,1,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3098,0,0,0,953,0,0,0,0,0
+b18a0eb2-ff9b-452d-9402-5636aa836415,2017-01-10 08:08:08.000,2,1,2017,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3098,0,0,0,953,0,0,0,0,0
+48e282d8-7d82-4566-be21-04962556cb5c,2017-01-05 08:08:08.000,1,1,2017,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,250,0,1,0,2,0,0,0,0,0
+65c37fe3-d6e6-4225-80dc-a29d0626fbee,2016-12-16 08:08:08.000,50,12,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,32020,1,0,0,6404,0,0,0,0,0
+3618b495-5f30-4613-b161-c4d8a1d12836,2016-12-05 08:08:08.000,49,12,2016,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,4776,0,0,0,900,0,0,0,0,0
+07342fe0-548e-4cbf-bd3e-aa3ebc86de2a,2016-10-10 08:08:08.000,41,10,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,24660,0,0,0,0,0,0,0,0,0
+337905dc-a28c-492b-86f3-4e7875db7e99,2016-06-30 08:08:08.000,26,6,2016,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,2,58704,0,0,0,0,0,0,0,0,0
+4d58ca5a-591d-4c23-a669-b44cf3b95647,2016-05-19 08:08:08.000,20,5,2016,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,3160,0,0,0,0,0,0,0,0,0
+09087042-0eaf-4352-96d7-b2487933f0da,2016-03-14 08:08:08.000,11,3,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,425,0,0,0,85,0,0,0,0,0
+cc18a2c2-5fd4-4258-bd3a-3f811af5a5fa,2016-02-28 08:08:08.000,8,2,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,13578,0,0,0,0,0,0,0,0,0
+2b417625-b746-44b2-8dee-7b9d78e54c14,2016-02-21 08:08:08.000,7,2,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,1,0,14020,0,0,0,0,0,0,0,0,0
+263e8537-6a03-465d-80ac-2fd9fcadb90b,2016-02-15 08:08:08.000,7,2,2016,35,Jawa Timur,35.14,Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,0,0,0,0,1549,0,0,0,0,0
+087dbf91-f0ef-41f5-9472-ea6e324bfb95,2016-02-09 08:08:08.000,6,2,2016,35,Jawa Timur,35.75,Kota Pasuruan,1010,Banjir,Banjir,True,1.0,0,0,0,6530,0,0,0,0,0,0,0,0,0
