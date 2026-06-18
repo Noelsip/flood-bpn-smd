@@ -56,7 +56,8 @@ ROLL_COLS = [
     "soil_roll3_mean", "soil_roll7_mean", "tmax_roll7_mean",
 ]
 PCTL_COLS = ["rain7_pctl", "precip7_pctl", "soil7_pctl"]
-FEATURES = LAG_COLS + ROLL_COLS + PCTL_COLS
+CALENDAR_COLS = ["doy_sin", "doy_cos", "month_sin", "month_cos"]
+FEATURES = LAG_COLS + ROLL_COLS + PCTL_COLS + CALENDAR_COLS
 
 
 def standardize_weather_cols(df: pd.DataFrame) -> pd.DataFrame:
@@ -136,6 +137,13 @@ def load_external_daily(name: str, cfg: dict) -> pd.DataFrame | None:
 def make_features(daily: pd.DataFrame) -> pd.DataFrame:
     df = daily.sort_values(["city", "time"]).reset_index(drop=True)
     grouped = df.groupby("city", sort=False)
+    day_of_year = df["time"].dt.dayofyear.astype(float)
+    month = df["time"].dt.month.astype(float)
+    df["doy_sin"] = np.sin(2 * np.pi * day_of_year / 366.0)
+    df["doy_cos"] = np.cos(2 * np.pi * day_of_year / 366.0)
+    df["month_sin"] = np.sin(2 * np.pi * month / 12.0)
+    df["month_cos"] = np.cos(2 * np.pi * month / 12.0)
+
     for col in SHORT:
         for lag in range(1, LAGS + 1):
             df[f"{col}_lag{lag}"] = grouped[col].shift(lag)
