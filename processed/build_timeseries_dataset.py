@@ -1,85 +1,143 @@
 """
-build_timeseries_dataset.py
-===========================
-Mengubah dataset harian `dataset_utama.csv` (snapshot cuaca + Flood 0/1) menjadi
-dataset TIME SERIES untuk klasifikasi banjir (Time Series Classification).
+Build one central, model-ready time-series dataset.
 
-Sesuai revisi dosen:
-  - Data disusun temporal (urut per kota + tanggal).
-  - Dibuat lag feature t-1 .. t-7 untuk tiap variabel cuaca.
-  - Ditambah rolling/agregasi (akumulasi hujan 3/7/14 hari, dst).
-  - Target = Flood pada t+HORIZON (default 3 hari ke depan -> Flood_t+3).
-  - Tidak ada kebocoran masa depan: fitur hanya memakai data <= t, target di t+3.
+Output:
+    processed/dataset_timeseries.csv
 
-Kolom `latitude` & `longitude` (titik lokasi per kota) dibiarkan apa adanya, tidak
-ditransformasi. Kolom ini dipakai sebagai info lokasi & dibawa ke output prediksi
-agar hasil prediksi menyertakan koordinat.
+Split policy:
+    - test  = Balikpapan/Samarinda rows with time >= 2023-01-01
+    - train = all external-city rows from all available years + Balikpapan/Samarinda before 2023
 
-Output: processed/dataset_timeseries.csv
-Jalankan:  python processed/build_timeseries_dataset.py
+Training negatives are downsampled to 2:1 (negative:positive), prioritized from
+the 21 days before flood-target windows in the same city.
 """
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PRIMARY_PATH = ROOT / "processed" / "dataset_utama.csv"
-OUTPUT_PATH = ROOT / "processed" / "dataset_timeseries.csv"
+PROCESSED_DIR = ROOT / "processed"
+PRIMARY_PATH = PROCESSED_DIR / "dataset_utama.csv"
+OUTPUT_PATH = PROCESSED_DIR / "dataset_timeseries.csv"
+DATASET_DIR = ROOT / "dataset"
+FLOOD_DIR = ROOT / "banjir"
 
-# Horizon peramalan: prediksi banjir berapa hari ke depan.
-FORECAST_HORIZON = 3   # Flood_t+3
-
-# Jendela observasi lag (t-1 .. t-LAGS).
+HORIZON = 3
 LAGS = 7
-
-# Variabel cuaca mentah -> nama pendek untuk fitur lag.
-WEATHER_COLS = {
-    "precipitation_sum (mm)": "precip",
-    "temperature_2m_max (°C)": "tmax",
-    "temperature_2m_min (°C)": "tmin",
-    "wind_speed_10m_max (km/h)": "wind",
-    "rain_sum (mm)": "rain",
-    "soil_moisture_0_to_100cm_mean (m³/m³)": "soil",
+SEED = 42
+SPLIT_CUTOFF_DATE = "2023-01-01"
+UNDERSAMPLE_RATIO = 2
+NEGATIVE_LOOKBACK_DAYS = 21
+EASY_NEG_PERCENTILE = 50
+KALTIM_CITY_NAMES = ["Kota Balikpapan", "Kota Samarinda"]
+EXTERNAL_FLOOD_DATECOL = "Tanggal / Waktu Kejadian"
+EXTERNAL_CITIES = {
+    "Bandung": dict(weather=DATASET_DIR / "cuaca bandung 16-26.csv", flood=FLOOD_DIR / "bandung-210 banjir.csv"),
+    "Bekasi": dict(weather=DATASET_DIR / "cuaca bekasi 16-26.csv", flood=FLOOD_DIR / "bekasi-134 banjir.csv"),
+    "Bogor": dict(weather=DATASET_DIR / "cuaca bogor 16-26.csv", flood=FLOOD_DIR / "bogor-352 banjir.csv"),
+    "Pasuruan": dict(weather=DATASET_DIR / "cuaca pasuruan 16-26.csv", flood=FLOOD_DIR / "pasuruan - 154 banjir.csv"),
 }
 
+SHORT = ["precip", "tmax", "tmin", "wind", "rain", "soil"]
+LAG_COLS = [f"{c}_lag{k}" for c in SHORT for k in range(1, LAGS + 1)]
+ROLL_COLS = [
+    "rain_roll3_sum", "rain_roll7_sum", "rain_roll14_sum",
+    "precip_roll3_sum", "precip_roll7_sum",
+    "soil_roll3_mean", "soil_roll7_mean", "tmax_roll7_mean",
+]
+PCTL_COLS = ["rain7_pctl", "precip7_pctl", "soil7_pctl"]
+FEATURES = LAG_COLS + ROLL_COLS + PCTL_COLS
 
-def load_primary() -> pd.DataFrame:
+
+def standardize_weather_cols(df: pd.DataFrame) -> pd.DataFrame:
+    rename = {}
+    for col in df.columns:
+        low = str(col).strip().lower()
+        if low.startswith("precipitation_sum"):
+            rename[col] = "precip"
+        elif low.startswith("temperature_2m_max"):
+            rename[col] = "tmax"
+        elif low.startswith("temperature_2m_min"):
+            rename[col] = "tmin"
+        elif low.startswith("wind_speed_10m_max"):
+            rename[col] = "wind"
+        elif low.startswith("rain_sum"):
+            rename[col] = "rain"
+        elif low.startswith("soil_moisture_0_to_100cm_mean"):
+            rename[col] = "soil"
+    return df.rename(columns=rename)
+
+
+def load_kaltim_daily() -> pd.DataFrame:
     if not PRIMARY_PATH.exists():
-        raise FileNotFoundError(
-            f"{PRIMARY_PATH} tidak ada. Jalankan dulu processed/build_primary_dataset.py."
-        )
-    df = pd.read_csv(PRIMARY_PATH)
-    df["time"] = pd.to_datetime(df["time"], errors="coerce")
-    df = df.rename(columns=WEATHER_COLS)
-    df = df.sort_values(["city", "time"]).reset_index(drop=True)
-    return df
+        raise FileNotFoundError(f"{PRIMARY_PATH} tidak ada. Jalankan build_primary_dataset.py dulu.")
+    df = standardize_weather_cols(pd.read_csv(PRIMARY_PATH))
+    df["time"] = pd.to_datetime(df["time"], errors="coerce").dt.normalize()
+    return df[["city", "time", *SHORT, "Flood"]].copy()
 
 
-def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
-    df["month"] = df["time"].dt.month
-    df["dayofyear"] = df["time"].dt.dayofyear
-    return df
+def load_external_daily(name: str, cfg: dict) -> pd.DataFrame | None:
+    wpath, fpath = Path(cfg["weather"]), Path(cfg["flood"])
+    if not wpath.exists() or not fpath.exists():
+        print(f"[SKIP] {name}: file tidak ditemukan")
+        return None
+
+    lines = wpath.read_text(encoding="utf-8").splitlines()
+    try:
+        header_idx = next(i for i, line in enumerate(lines) if line.lstrip().startswith("time,"))
+    except StopIteration:
+        print(f"[SKIP] {name}: header time tidak ditemukan")
+        return None
+
+    weather = standardize_weather_cols(pd.read_csv(wpath, skiprows=header_idx))
+    missing = [c for c in SHORT if c not in weather.columns]
+    if missing:
+        print(f"[SKIP] {name}: kolom cuaca hilang {missing}")
+        return None
+
+    weather["time"] = pd.to_datetime(weather["time"], errors="coerce").dt.normalize()
+    weather = weather.dropna(subset=["time"]).sort_values("time")
+    full = pd.date_range(weather["time"].min(), weather["time"].max(), freq="D")
+    weather = weather.set_index("time").reindex(full)[SHORT].rename_axis("time").reset_index()
+
+    flood = pd.read_csv(fpath)
+    if "date" in flood.columns:
+        dates = pd.to_datetime(flood["date"], errors="coerce").dt.normalize()
+        flood_set = set(dates.dropna())
+    elif {"start_date", "end_date"}.issubset(flood.columns):
+        flood_set = set()
+        starts = pd.to_datetime(flood["start_date"], errors="coerce").dt.normalize()
+        ends = pd.to_datetime(flood["end_date"], errors="coerce").dt.normalize()
+        for start, end in zip(starts, ends):
+            if pd.notna(start) and pd.notna(end) and end >= start:
+                flood_set.update(pd.date_range(start, end, freq="D"))
+    elif EXTERNAL_FLOOD_DATECOL in flood.columns:
+        dates = pd.to_datetime(flood[EXTERNAL_FLOOD_DATECOL], errors="coerce").dt.normalize()
+        flood_set = set(dates.dropna())
+    else:
+        print(f"[SKIP] {name}: kolom tanggal banjir tidak ditemukan")
+        return None
+
+    weather["Flood"] = weather["time"].isin(flood_set).astype(int)
+    weather["city"] = name
+    return weather[["city", "time", *SHORT, "Flood"]]
 
 
-def add_lag_features(df: pd.DataFrame) -> pd.DataFrame:
-    g = df.groupby("city", sort=False)
-    short_names = list(WEATHER_COLS.values())
-    for col in short_names:
-        for k in range(1, LAGS + 1):
-            df[f"{col}_lag{k}"] = g[col].shift(k)
-    return df
+def make_features(daily: pd.DataFrame) -> pd.DataFrame:
+    df = daily.sort_values(["city", "time"]).reset_index(drop=True)
+    grouped = df.groupby("city", sort=False)
+    for col in SHORT:
+        for lag in range(1, LAGS + 1):
+            df[f"{col}_lag{lag}"] = grouped[col].shift(lag)
 
-
-def add_rolling_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Agregasi akumulasi. Pakai shift(1) lalu rolling agar hanya memakai
-    data SAMPAI t-1 (aman, tidak membocorkan hari t maupun masa depan)."""
-    g = df.groupby("city", sort=False)
-
-    def roll(col, window, how):
-        s = g[col].shift(1)
-        r = s.rolling(window, min_periods=window)
-        return r.sum() if how == "sum" else r.mean()
+    def roll(col: str, window: int, how: str) -> pd.Series:
+        shifted = grouped[col].shift(1)
+        per_city = shifted.groupby(df["city"], sort=False)
+        if how == "sum":
+            return per_city.transform(lambda s: s.rolling(window, min_periods=window).sum())
+        return per_city.transform(lambda s: s.rolling(window, min_periods=window).mean())
 
     df["rain_roll3_sum"] = roll("rain", 3, "sum")
     df["rain_roll7_sum"] = roll("rain", 7, "sum")
@@ -89,47 +147,97 @@ def add_rolling_features(df: pd.DataFrame) -> pd.DataFrame:
     df["soil_roll3_mean"] = roll("soil", 3, "mean")
     df["soil_roll7_mean"] = roll("soil", 7, "mean")
     df["tmax_roll7_mean"] = roll("tmax", 7, "mean")
+
+    def expanding_percentile(series: pd.Series) -> pd.Series:
+        return series.expanding(min_periods=10).rank(pct=True)
+
+    df["rain7_pctl"] = df.groupby("city")["rain_roll7_sum"].transform(expanding_percentile)
+    df["precip7_pctl"] = df.groupby("city")["precip_roll7_sum"].transform(expanding_percentile)
+    df["soil7_pctl"] = df.groupby("city")["soil_roll7_mean"].transform(expanding_percentile)
+
+    target = f"Flood_t+{HORIZON}"
+    df[target] = grouped["Flood"].shift(-HORIZON)
+    df = df.dropna(subset=FEATURES + [target]).reset_index(drop=True)
+    df[target] = df[target].astype(int)
     return df
 
 
-def add_target(df: pd.DataFrame) -> pd.DataFrame:
-    g = df.groupby("city", sort=False)
-    df[f"Flood_t+{FORECAST_HORIZON}"] = g["Flood"].shift(-FORECAST_HORIZON)
-    return df
+def select_balanced_train(train_pool: pd.DataFrame, target: str) -> tuple[pd.DataFrame, dict]:
+    rng = np.random.RandomState(SEED)
+    y = train_pool[target].astype(int).to_numpy()
+    pos_idx = np.where(y == 1)[0]
+    neg_idx = np.where(y == 0)[0]
+    target_neg = UNDERSAMPLE_RATIO * len(pos_idx)
+
+    preflood_mask = np.zeros(len(train_pool), dtype=bool)
+    for _, group in train_pool.groupby("city", sort=False):
+        pos_times = pd.to_datetime(group.loc[group[target] == 1, "time"])
+        group_idx = group.index.to_numpy()
+        group_times = pd.to_datetime(group["time"])
+        group_mask = np.zeros(len(group), dtype=bool)
+        for flood_time in pos_times:
+            start = flood_time - pd.Timedelta(days=NEGATIVE_LOOKBACK_DAYS)
+            group_mask |= ((group_times >= start) & (group_times < flood_time)).to_numpy()
+        preflood_mask[group_idx] = group_mask
+
+    preflood_neg = neg_idx[preflood_mask[neg_idx]]
+    hard_mask = train_pool["rain7_pctl"].to_numpy() >= (EASY_NEG_PERCENTILE / 100.0)
+    hard_neg = np.setdiff1d(neg_idx[hard_mask[neg_idx]], preflood_neg, assume_unique=False)
+    easy_neg = np.setdiff1d(neg_idx[~hard_mask[neg_idx]], preflood_neg, assume_unique=False)
+
+    selected = []
+    if len(preflood_neg):
+        selected.extend(rng.choice(preflood_neg, size=min(target_neg, len(preflood_neg)), replace=False).tolist())
+    need = target_neg - len(selected)
+    if need > 0 and len(hard_neg):
+        selected.extend(rng.choice(hard_neg, size=min(need, len(hard_neg)), replace=False).tolist())
+    need = target_neg - len(selected)
+    if need > 0 and len(easy_neg):
+        selected.extend(rng.choice(easy_neg, size=min(need, len(easy_neg)), replace=False).tolist())
+
+    keep_neg = np.array(selected, dtype=int)
+    keep = np.concatenate([pos_idx, keep_neg])
+    rng.shuffle(keep)
+    stats = {
+        "pos": len(pos_idx), "neg_before": len(neg_idx), "neg_after": len(keep_neg),
+        "preflood": int(np.isin(keep_neg, preflood_neg).sum()),
+        "hard": int(np.isin(keep_neg, hard_neg).sum()),
+        "easy": int(np.isin(keep_neg, easy_neg).sum()),
+    }
+    return train_pool.iloc[keep].copy().reset_index(drop=True), stats
 
 
 def build() -> pd.DataFrame:
-    df = load_primary()
-    df = add_time_features(df)
-    df = add_lag_features(df)
-    df = add_rolling_features(df)
-    df = add_target(df)
+    daily_frames = [load_kaltim_daily()]
+    for city, cfg in EXTERNAL_CITIES.items():
+        frame = load_external_daily(city, cfg)
+        if frame is not None:
+            daily_frames.append(frame)
 
-    target_col = f"Flood_t+{FORECAST_HORIZON}"
-    feature_cols = [c for c in df.columns if c.endswith(tuple(
-        [f"_lag{k}" for k in range(1, LAGS + 1)]
-    )) or c.endswith(("_sum", "_mean"))]
+    daily = pd.concat(daily_frames, ignore_index=True).sort_values(["city", "time"]).reset_index(drop=True)
+    ts = make_features(daily)
+    target = f"Flood_t+{HORIZON}"
+    cutoff = pd.Timestamp(SPLIT_CUTOFF_DATE)
+    is_kaltim = ts["city"].isin(KALTIM_CITY_NAMES)
 
-    # Buang baris yang fiturnya belum lengkap (awal seri) atau target kosong (akhir seri).
-    df = df.dropna(subset=feature_cols + [target_col]).reset_index(drop=True)
-    df[target_col] = df[target_col].astype(int)
-    return df
+    train_pool = ts[(~is_kaltim) | (ts["time"] < cutoff)].copy().reset_index(drop=True)
+    test = ts[is_kaltim & (ts["time"] >= cutoff)].copy().reset_index(drop=True)
+    train, stats = select_balanced_train(train_pool, target)
+    train["split"] = "train"
+    test["split"] = "test"
+    out = pd.concat([train, test], ignore_index=True).sort_values(["split", "time", "city"]).reset_index(drop=True)
+    print("balance train:", stats)
+    return out
 
 
 def main() -> None:
     df = build()
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(OUTPUT_PATH, index=False)
-    target_col = f"Flood_t+{FORECAST_HORIZON}"
-
+    target = f"Flood_t+{HORIZON}"
     print(f"saved : {OUTPUT_PATH}")
     print(f"rows  : {len(df)} | cols: {df.shape[1]}")
-    print(f"target: {target_col} (prediksi {FORECAST_HORIZON} hari ke depan)")
-    print(f"range : {df['time'].min().date()} -> {df['time'].max().date()}")
-    print("\ndistribusi target per kota (count, banjir):")
-    print(df.groupby("city")[target_col].agg(["count", "sum"]).to_string())
-    pos = int(df[target_col].sum())
-    print(f"\ntotal banjir(t+{FORECAST_HORIZON}): {pos} / {len(df)} "
-          f"({pos / len(df) * 100:.2f}%)")
+    print(df.groupby(["split", "city"])[target].agg(["count", "sum"]).to_string())
 
 
 if __name__ == "__main__":
