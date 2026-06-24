@@ -224,17 +224,78 @@ def attach_kecamatan_prior(
     return base.merge(prior, on="city", how="left")
 
 
+def evaluate_anomaly_overlap(
+    predictions: pd.DataFrame,
+    *,
+    target: str = TARGET,
+    top_rates: tuple[float, ...] = (0.01, 0.05, 0.10),
+) -> pd.DataFrame:
+    """Post-hoc overlap and ranking analysis against historical flood records."""
+    rows = []
+    if target not in predictions.columns:
+        return pd.DataFrame()
+
+    for city, group in predictions.groupby("city", sort=True):
+        frame = group.sort_values("anomaly_score", ascending=False).reset_index(drop=True)
+        flood = frame[target].astype(int)
+        anomaly = frame["is_anomaly"].astype(int)
+        historical_flood_days = int(flood.sum())
+        anomaly_days = int(anomaly.sum())
+        flood_days_flagged = int(((anomaly == 1) & (flood == 1)).sum())
+        row = {
+            "city": city,
+            "test_days": int(len(frame)),
+            "historical_flood_days": historical_flood_days,
+            "anomaly_days": anomaly_days,
+            "anomaly_rate": float(anomaly.mean()),
+            "flood_days_flagged": flood_days_flagged,
+            "overlap_rate": (
+                flood_days_flagged / historical_flood_days
+                if historical_flood_days
+                else np.nan
+            ),
+            "mean_score_flood_days": (
+                float(frame.loc[flood == 1, "anomaly_score"].mean())
+                if historical_flood_days
+                else np.nan
+            ),
+            "mean_score_non_flood_days": (
+                float(frame.loc[flood == 0, "anomaly_score"].mean())
+                if int((flood == 0).sum())
+                else np.nan
+            ),
+        }
+        for rate in top_rates:
+            n_top = max(1, int(np.ceil(len(frame) * rate)))
+            top = frame.head(n_top)
+            hits = int(top[target].astype(int).sum())
+            pct = int(round(rate * 100))
+            row[f"top_{pct}pct_days"] = n_top
+            row[f"top_{pct}pct_flood_hits"] = hits
+            row[f"top_{pct}pct_hit_rate"] = (
+                hits / historical_flood_days
+                if historical_flood_days
+                else np.nan
+            )
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
+
 def save_outputs(
     summary: pd.DataFrame,
     predictions: pd.DataFrame,
     output_dir: Path,
     kecamatan_predictions: pd.DataFrame | None = None,
+    evaluation: pd.DataFrame | None = None,
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     summary.to_csv(output_dir / "isolation_forest_summary_per_city.csv", index=False)
     predictions.to_csv(output_dir / "isolation_forest_anomaly_all.csv", index=False)
     if kecamatan_predictions is not None:
         kecamatan_predictions.to_csv(output_dir / "isolation_forest_anomaly_kecamatan.csv", index=False)
+    if evaluation is not None:
+        evaluation.to_csv(output_dir / "isolation_forest_overlap_evaluation.csv", index=False)
     for city, group in predictions.groupby("city"):
         slug = city.lower().replace("kota ", "").replace(" ", "_")
         group.to_csv(output_dir / f"isolation_forest_anomaly_{slug}.csv", index=False)
