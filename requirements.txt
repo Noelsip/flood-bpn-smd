@@ -1,26 +1,11 @@
-# Flood AutoML — dependencies (Python 3.11 disarankan)
-# Instal:  pip install -r requirements.txt
+# Flood anomaly detection dependencies (Python 3.11 disarankan)
+# Instal: pip install -r requirements.txt
 numpy
 pandas
 matplotlib
 scipy
 scikit-learn
 openpyxl
-
-# Geospasial
-geopandas
-rasterio
-pyogrio
-shapely
-pyproj
-rtree
-
-# Machine learning / AutoML
-flaml[automl]
-xgboost
-catboost
-imbalanced-learn
-shap
 
 # Notebook
 nbformat

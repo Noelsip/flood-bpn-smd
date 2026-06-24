@@ -1,112 +1,482 @@
-Flood Probability Estimation with Anomaly Detection using Automated Machine Learning in Balikpapan and Samarinda
-> "Estimating Flood probability estimation using automated machine learning (AutoML) in balikpapan and Samarinda,"
-
-## Abstract
-
-**Keywords:** artificial intelligence; machine learning; deep learning; informatics
-
-## 1. Introduction
-
-As the primary buffer zones for the Nusantara Capital City (IKN), Balikpapan and Samarinda play a strategic role in supporting mobility, logistics, and development activities for the new capital. The official decision to relocate the national capital to East Kalimantan in 2019 firmly established these two cities as indispensable supporting regions [1]. The urgency of this development is currently challenged by severe disaster threats. The disaster risk profile of East Kalimantan Province identifies flooding as one of the most significant hazards. It is classified under Sector IV Level 6 in the Interpretative Structural Modelling analysis, indicating high hazard, vulnerability, and risk levels across almost all local municipalities, including Balikpapan and Samarinda [2]. This situation is further aggravated by land cover changes resulting from ongoing IKN construction. A hydrological study in the Pemaluan area within the IKN development zone observed a 3.15% expansion in flood inundation areas between 2019 and 2023, directly caused by reduced soil infiltration and increased surface runoff [3]. The flood vulnerability of Balikpapan and Samarinda transcends local concerns and represents a systemic threat that could impede the overall progress of the IKN project.
-
-Flooding in East Kalimantan, including Balikpapan and Samarinda, is a highly dynamic phenomenon that fluctuates in close correlation with weather conditions and extreme rainfall. Climatologically, the province receives an average rainfall of 174.8 mm and is heavily influenced by tropical convection processes alongside intensive global climate change. Extreme precipitation events ultimately serve as the primary trigger for local flooding [2]. This research supported by a hydrological analysis of the Pemaluan watershed, which reveals that daily rainfall data from 2004 to 2023 directly correlates with the annual flood inundation extent. The study demonstrates that increased rainfall intensity is proportional to the expansion of flood-affected areas [3]. Recent research on the sustainable development of IKN also highlights that flood management in cities like Samarinda and Balikpapan remains unresolved. This condition is expected to deteriorate further due to ongoing large-scale land conversions [1]. Establishing a clear correlation between daily weather data and historical flood records is an essential step in understanding the temporal patterns of these environmental triggers. This correlation provides a reliable analytical foundation to support early warning systems and disaster mitigation strategies across the IKN buffer zones.
-
-Using Traditional Machine Learning in flood modeling also has some problems. It needs people to get involved, which includes choosing the features picking the right algorithm and adjusting the settings manually [4]. This not takes a long time but also means that peoples personal opinions can affect the results, which can make the model not work as well as it could. Traditional Machine Learning also has trouble with the kind of data we use for flood prediction modeling. This data is often very complicated. Has a lot of information and it is not balanced with many more days without floods than days with floods. This means the model tends to favor the days without floods, which makes it hard for it to find the flood events [4]. To fix these problems some new methods like Gradient Boosting, Random Forest and XGBoost have become popular for modeling flood risk [5]. These methods are good at showing the relationships between weather and floods, give us a better understanding of how floods work in different environments.
-
-This study uses three algorithms because they have unique features and advantages:
-
-- **Random Forest** is used as a model because it is very stable and can handle noisy data. It is also very good to avoiding overfitting, which makes it a good model to compare with the models [4].
-- **XGBoost** is used because it is very fast and efficient. It also has a built-in way to handle missing information, which makes it very strong when working with real-world data [5].
-- **CatBoost** is chosen because it can avoid the model from overfitting. It does by calculating some values which makes it less likely to have problems when working with limited data [5].
-
-To get rid of bias and make Machine Learning more efficient Automated Machine Learning offer a solution. Models like TPOT and FLAML can fully automate the process of making a Machine Learning model [6], [4]. This includes getting the data ready, choosing the features, and finding the best model. By minimizing involvement Automated Machine Learning makes research more reliable and allows us to explore more ideas in less time. This is very important for flood modeling because it means we can make models faster which can help save times. Flood models like these can really help us understand how floods work and make predictions, which is crucial.
-
-In response to this gap research, our study proposes a data-driven method that integrates disaster event records data from the National Disaster Management Agency (BNPB) with weather data from Open-Meteo. To minimize subjective bias, Automated Machine Learning (AutoML) is implemented to design an optimal pipeline architecture. This study compares three state-of-the-art tree-ensemble algorithms: Random Forest, XGBoost, and CatBoost that are designed to handle imbalanced tabular environmental data. The performance of these models is then enhanced through a targeted hyperparameter optimization scheme to ensure optimal generalization.
-
-This research objectively implements machine learning models to predict the probability of daily flood events in Balikpapan and Samarinda, which are strategic buffer zones for the Nusantara Capital City (IKN). By integrating historical weather data and disaster event records, the study aims to develop a robust predictive model that can provide early warnings for flood events. The specific objectives of this research are:
-
-1. To integrate datasets by combining weather data from Open-Meteo with event-based flood disaster records from the National Disaster Management Agency (BNPB) into a structured tabular environmental dataset.
-2. To compare the performance of three tree-ensemble algorithms (Random Forest, XGBoost, and CatBoost) in predicting flood events based on the integrated dataset.
-3. Automate the classification pipeline using an AutoML framework, ensuring an objective and efficient modeling process that includes data preprocessing and handling class imbalance.
-
-## 2. Related Works
-
-Flood prediction has become an important research topic due to the increasing frequency of flood disasters in many regions. Machine learning methods are widely used because they can identify complex relationships between environmental and human-related variables. Compared to conventional statistical approaches, machine learning models are considered more flexible and effective in estimating flood-prone areas.
-
-Several previous studies have applied machine learning algorithms for flood prediction in Indonesia. Puspasari et al. [7] developed a Random Forest-based flood prediction model using rainfall, streamflow, and land cover data, and the model achieved high prediction performance for disaster mitigation purposes. [?] also integrated machine learning with Geographic Information Systems (GIS) using rainfall datasets and showed that machine learning models can support flood early warning systems effectively.
-
-In East Kalimantan, Heo and Lee [8] conducted a multi-hazard assessment using the Random Forest algorithm to estimate the probability of floods, landslides, forest fires, and droughts. The study utilized several environmental and anthropogenic variables such as rainfall, slope, land cover, NDVI, and population density to generate spatial probability maps. The results showed that flood-prone areas were concentrated in several regions of East Kalimantan, especially in the southern and central areas.
-
-Focusing on the capital city of East Kalimantan Province, Sukmara et al. [9] investigated the progress and challenges of flood management in Samarinda, the most populous city in East Kalimantan. The city's high vulnerability to flooding is attributed to its geographical location in the downstream area of the Mahakam River and its annual rainfall exceeding 2,600 mm, approximately 2.5 times the global average. Historically, flood mitigation efforts in Samarinda have been dominated by structural engineering measures, including the construction of multipurpose dams, levees, and drainage channel normalization. However, there has been a growing shift toward non-structural approaches, such as flood forecasting and early warning systems. Despite this transition, the study identified significant technical and knowledge-based constraints, particularly the limited availability of real-time monitoring equipment and the shortage of skilled professionals. These challenges underscore the need for more advanced predictive technologies to enhance urban resilience and mitigate the substantial economic impacts of recurrent flood events.
-
-The potential of Automated Machine Learning (AutoML) in improving flood prediction accuracy and risk assessment has been explored by Guo et al. [10]. Through comparison with three machine learning algorithms, namely CatBoost, XGBoost, and BPDNN, for urban waterlogging early detection, the study found that AutoML outperformed all models across evaluation metrics, with NSE and R2 values exceeding 0.92. These findings indicate that AutoML is effective in areas with minimal water level monitoring to provide responsive and precise spatial estimations. In line with this, Nam et al. [11] mapped flood susceptibility in Seoul using TPOT an evolutionary algorithm-based AutoML framework integrated with Bayesian hyperparameter optimization via Optuna. The Gradient Boosting model tuned through Optuna achieved the highest AUC score of 0.966, surpassing all manual baseline models, accompanied by SHAP analysis for feature contribution transparency. Meanwhile, Gao et al. [12] combined AutoML with the Analytic Hierarchy Process (AHP) to map flood risk in the Yangtze River Delta Urban Agglomeration, establishing the CatBoost model through Auto-Sklearn as the optimal model with the highest precision of 0.9030. These findings collectively highlight the capability of AutoML to automate feature selection, model optimization, and hyperparameter tuning, thereby reducing human bias while improving reproducibility in flood modeling tasks.
-
-While previous research has demonstrated the effectiveness of AutoML for flood forecasting, limited research has investigated the application of AutoML-based flood prediction using meteorological and rainfall data in East Kalimantan, specifically in Samarinda and Balikpapan. This study aims to evaluate the potential of AutoML in predicting floods in these regions and compare its performance with conventional machine learning approaches.
-
-The integration of machine learning with physics approaches is increasingly being applied to flood forecasting research to optimize scalability and prediction accuracy. An example is the FloodCast framework developed by Gao et al. [13] for large-scale flood modeling and projection. This system combines multi-satellite observation data with a geometrically adaptive physics-based neural network solver (GeoPINS). Through a combination of real-time rainfall data, Sentinel-1 SAR satellite imagery, digital elevation models (DEMs), and hydrodynamic modeling, FloodCast is capable of high-resolution flood inundation mapping and precise water depth estimation. Testing during the 2022 Pakistan floods demonstrated that this method produces accurate flood extent and depth predictions, with significantly higher computational efficiency than conventional hydrodynamic simulations.
-
-Using the highly complex temporal and spatial dependencies in hydrological data, Feng et al. [14] developed a flood forecasting model called Adaptive Periodic and Spatial Long Short-Term Memory (APS-LSTM). This model applies the Fast Fourier Transform (FFT) to detect periodic patterns in rainfall and river flow data. APS-LSTM integrates periodic and spatial self-attention mechanisms to understand the dynamic interactions between monitoring stations. Test results using real-world hydrological datasets show that APS-LSTM consistently outperforms conventional models.
-
-## 3. Methods
-
-This section describes the overall workflow used to estimate flood probability in Balikpapan and Samarinda, organised to ensure the reproducibility of the research. The methodology consists of five main stages: data collection, dataset construction, time-series transformation and forecast-target definition, data preprocessing and feature engineering, machine learning modelling, and model evaluation. An optional spatial susceptibility-mapping stage using DEM and RBI layers may be included to attribute the city-level forecast to flood-prone sub-districts (kecamatan). Each stage is presented in detail in the following subsections, covering the data sources, the construction of the labelled point dataset, the preparation of the conditioning factors, the training and tuning of the classification models, and the metrics used to assess their performance.
-
-### 3.1 Data Collection
-
-This study utilized two primary data sources: flood event records obtained from DIBI-BNPB and meteorological data collected from Open-Meteo. The data used in this study was obtained from the Data and Information on Disasters in Indonesia (DIBI), a disaster information data reference managed by the National Disaster Management Authority (BNPB). DIBI is the primary national repository for historical disaster records in Indonesia, and is recognized as the first and most comprehensive disaster information center in Southeast Asia [15].
-
-This dataset covers disaster occurrence records across all regions in Indonesia, including disaster information, disaster type, date of occurrence, geographic location, number of casualties, and infrastructure damage. Data collection in DIBI is conducted by the Data and Information Center [15].
-
-This dataset was selected because it covers records of flood events in Balikpapan and Samarinda that are relevant as training data for the prediction model, and provides spatial disaster impact information down to the regency/city level, enabling analysis focused on the buffer zone of the Nusantara Capital City (IKN). This data is also an official government source and has been widely used as a reference for research in Indonesia.
-
-To analyze the triggers of flooding due to extreme weather, this study downloaded daily meteorological datasets (2016–2026) in Balikpapan and Samarinda via the Open-Meteo API [16]. Crucial variables collected include rainfall, temperature (2 m), relative humidity (2 m), MSLP, and wind speed (10 m) due to their strong correlation with hydrometeorological dynamics. Open-Meteo itself integrates various proven global climate models for environmental studies. This API-based data structure not only accelerates the information collection process but also ensures transparency and consistent data reprocessing.
-
-### 3.2 Data Construction
-
-Flood event data sourced from the National Disaster Mitigation Agency (BNPB) was integrated with daily meteorological records from Open-Meteo, using date parameters as a reference for alignment. The resulting combination formed a final dataset representing daily dynamics, with each entry containing weather parameter information along with relevant flood event validation labels.
-
-### 3.3 Time-Series Transformation and Forecast Target
-
-To capture the temporal dynamics that precede flooding, the daily dataset was transformed into a time-series representation. For each weather variable (precipitation, rainfall, maximum and minimum temperature, wind speed, and soil moisture), lagged features from t-1 to t-7 were generated, together with accumulation features such as 3-, 7-, and 14-day rainfall sums and 3- and 7-day soil-moisture means, because flooding is driven more by accumulated rainfall than by a single day. The prediction target was defined as the occurrence of a flood at any time within the next one to three days (Flood within t+1 to t+3), framing the task as a short-horizon flood forecasting classification over time-series data rather than a forecast of continuous values. To prevent any leakage of future information, every feature uses only data up to day t, and the dataset was split chronologically (the earliest 70% for training and the most recent 30% for testing) instead of randomly. The geographic coordinates (latitude and longitude) of each city were retained without transformation as location identifiers attached to the prediction output.
-
-### 3.4 Flood and Non-Flood Point Sampling (Optional Spatial Component)
-
-The following point-based sampling describes an optional spatial susceptibility-mapping component, applied only when DEM and RBI layers are available, that complements the time-series model by locating flood-prone sub-districts.
-
-Machine learning flood probability estimation is formulated as a binary classification problem in which every observation corresponds to a geographic location labelled as either a flood point (1) or a non-flood point (0). This point-based sampling strategy is widely adopted in data-driven flood susceptibility studies, where a flood inventory is paired with an equal number of non-flood locations to train and validate spatial prediction models [8, 11, 12].
-
-The flood points were generated from the historical flood records of Balikpapan and Samarinda obtained from DIBI [15]. Each documented flood event with an identifiable location within the study area was converted into a point feature, forming the positive class of the dataset. To address the class imbalance that is characteristic of flood data, where non-flood conditions vastly outnumber flood conditions [4], the non-flood points were generated through random sampling within areas that have no recorded flood history. These points were constrained to higher-elevation and low-susceptibility zones to reduce the likelihood of mislabelling, and were sampled in a balanced 1:1 ratio with the flood points, following common practice in flood susceptibility modelling [8, 11].
-
-Each sampled point was then assigned a set of flood conditioning factor values extracted from the spatial datasets through point overlay in a Geographic Information System (GIS). Topographic factors such as elevation and slope were derived from the SRTM 30 m Digital Elevation Model [17]. Land cover, the river network, and the road network were obtained from the Rupabumi Indonesia (RBI) vector basemap, from which hydrological factors such as distance to the nearest river were computed [18]. The anthropogenic factor of population density was derived from the official population statistics of Balikpapan and the East Kalimantan regencies/cities published by BPS [19, 20]. The resulting labelled point dataset, in which each point carries both its conditioning factor values and its flood/non-flood label, serves as the input for the subsequent preprocessing and modelling stages.
-
-### 3.5 Data Preprocessing & Feature Engineering
-
-Before the labelled point dataset could be used for modelling, a series of preprocessing steps was applied to ensure data quality and consistency. Points with missing or invalid conditioning factor values, which may arise from gaps in the spatial layers or from locations outside the coverage of the source datasets, were identified and removed to prevent bias during model training. Because the conditioning factors were extracted from heterogeneous sources with different spatial resolutions, all layers were reprojected into a common coordinate reference system and resampled to a uniform grid prior to point overlay, following the spatial harmonisation procedures commonly applied in flood susceptibility studies [8, 11].
-
-The conditioning factors used in this study consist of both numerical and categorical variables, and therefore required different handling before modelling. Numerical factors such as elevation, slope, distance to the nearest river, and population density were standardised so that variables measured on different scales would contribute comparably to the learning process, while the categorical land cover factor was transformed into numerical form through encoding [4]. This step is particularly important because flood conditioning factors span widely different ranges, and unscaled inputs can cause tree-ensemble and gradient-based models to behave inconsistently during training [5].
-
-Feature engineering was directed at deriving informative hydrological and topographic predictors from the base spatial datasets rather than using only the raw layers. Secondary factors such as slope and distance to the river were computed from the SRTM Digital Elevation Model and the RBI river network, as these derived variables are known to be strong indicators of flood susceptibility [8, 17, 18]. To retain only the most relevant predictors and reduce redundancy, feature importance analysis was used to assess the contribution of each factor, which is consistent with the interpretable feature selection approaches reported in recent flood modelling research [4, 6].
-
-### 3.6 Anomaly Detection
-
-In analyzing weather conditions related to flooding, the anomaly detection stage aims to validate the significance of normal behavior in the dataset.
-
-This study uses the Isolation Forest algorithm as an anomaly detection method. Isolation Forest can detect abnormal behavior by recursively separating features and randomly selected separator values. This is because anomalous observations are relatively rare and significantly different from the general population. Previous studies have demonstrated the effectiveness of the Isolation Forest algorithm in observing anomalous patterns in environmental and time series datasets, maintaining optimal performance compared to alternative anomaly detection techniques [21].
-
-The algorithm was applied to variables collected from Open-Meteo, including rainfall, temperature, relative humidity, atmospheric pressure, and wind speed. Anomaly information is maintained by generating an anomaly score for each observation. This anomaly score is implemented as an additional factor in an Automated Machine Learning (AutoML) framework. By incorporating anomaly information into the learning process, the recommended approach can improve the detection of unusual conditions that may contribute to flooding.
-
-### 3.7 Machine Learning Modeling
-
-This study estimates flood probability through supervised machine learning, framing the task as a binary classification of flood and non-flood events based on daily meteorological observations. Three ensemble algorithms, namely Random Forest, XGBoost, and CatBoost, were selected and compared because they have repeatedly demonstrated strong and robust performance in data-driven flood modelling [5, 4]. Random Forest was adopted as the primary model owing to its stability, resistance to overfitting, and ability to handle noisy environmental data, while XGBoost and CatBoost were included as competitive gradient-boosting baselines [7, 8].
-
-The selection of these algorithms is motivated by their complementary strengths in handling the complex and imbalanced nature of flood data. XGBoost is highly efficient and includes a built-in mechanism for handling missing values, which makes it robust when working with real-world spatial data, whereas CatBoost reduces the risk of overfitting on limited samples through its ordered boosting scheme [5]. Random Forest complements these models by aggregating multiple decision trees to produce stable predictions, making it a reliable benchmark for comparison across the three approaches [4].
-
-To minimise human bias and improve reproducibility, the training of the three algorithms was carried out within an Automated Machine Learning (AutoML) framework rather than through manual configuration. AutoML automates feature selection, model selection, and hyperparameter optimisation, which reduces the subjective decisions that commonly affect conventional flood modelling and allows a fairer comparison between Random Forest, XGBoost, and CatBoost [4, 5]. This approach follows recent studies that successfully applied AutoML to flood susceptibility and waterlogging prediction and reported performance exceeding that of manually tuned baselines [11, 12].
-
-The preprocessed dataset was divided into training and testing subsets so that model performance could be assessed on unseen data. Within the AutoML pipeline, each algorithm was trained on the training subset and its hyperparameters were automatically tuned to obtain the best configuration for the flood classification task [11, 6]. The trained models then produce a flood probability value for each observation, which can be aggregated into a daily flood occurrence prediction for Balikpapan and Samarinda [8].
-
-### 3.8 Model Evaluation
-
-The performance of the trained models was evaluated to determine how accurately they distinguish flood and non-flood events based on daily meteorological conditions. Evaluation was carried out on the testing subset using standard classification metrics, namely accuracy, precision, recall, and the F1-score, which together provide a balanced view of model performance on imbalanced flood data [12, 4]. These metrics were chosen because relying on accuracy alone can be misleading when the classes are uneven, so precision and recall are required to capture how well the model identifies actual flood events. Given the severe class imbalance, where flood days represent less than one percent of all observations, particular emphasis was placed on recall and the area under the precision–recall curve (AUC-PR), as these better reflect the model's ability to detect rare flood events than accuracy or AUC-ROC alone. Class imbalance was handled only on the training subset, after the chronological split, using SMOTE or class weighting to avoid data leakage.
-
-In addition to the threshold-based metrics, the area under the receiver operating characteristic curve (AUC-ROC) was used as a complementary indicator of overall discriminative ability. The AUC-ROC summarises the trade-off between the true positive rate and the false positive rate across all classification thresholds, and it is widely regarded as a reliable measure for comparing flood susceptibility models [11, 12]. The model achieving the highest AUC-PR together with consistently strong recall, precision, and F1-scores was selected as the best model for estimating flood probability in the study area [8, 5].
+Abstract
+The new Nusantara Capital City (IKN) and the areas surrounding Ba-
+likpapan and Samarinda, known as buffer zones, are in serious danger
+of suffering damaging flood events, which could stall IKN’s develop-
+ment. Machine Learning has demonstrated its capacity to assist in
+anticipating such events but conventional manual flood forecasting
+relies on human expertise, is poorly equipped to handle the heavily
+class imbalance in the historical weather data. Our team developed
+an objective and automated model that predicts one to three days
+ahead of urban floods in Balikpapan and Samarinda using weather
+data and floodlogs collected at BNPB to achieve the necessary lev-
+els of robustness and predictive ability. We combined Daily weather
+parameters (open-Meteo.com) with archivedflood logs data (BNPB).
+Framing the problem as time-series prediction with extracted sliding
+windowsfeatures and computedanomaly scoresusing Isolation Forest.
+After applying the SMOTE techniques to correct classimbalancein
+training set, theAutoML methodology
+Keywords: Automated Machine Learning (AutoML); Flood Fore-
+casting and Prediction; Time-Series Classification; Anomaly Detec-
+tion.
+Introduction
+Strategically positioned as the buffer zones to the Nusantara
+Capital City (IKN), Balikpapan and Samarinda are significant
+to bolster any mobility, logistical, and development efforts
+required for the new capital city. With official approval
+of the move of the national capital to East Kalimantan in
+2019, both cities were designated as inseparable supporting
+regions for IKN development [1]. However, at this critical
+development stage, these cities have now been seriously
+threatened by a multitude of severe risks to a disaster that
+would possibly impact IKN’s development plans. Based
+on the disaster risk profile for East Kalimantan Province,
+floods were determined as among the most severe disaster
+hazards and were classified as Sector IV level 6 in the
+Interpretative Structural Modelling analysis; showing the risks
+associated with the high levels of hazard and vulnerability
+faced by the regions almost throughout the entire area,
+including Balikpapan and Samarinda [2]. Compounding with
+IKN construction, land cover changes driven by the ongoing
+development also lead to increased risks. Hydrological
+assessments conducted on the Pemaluan watershed located
+within the IKN development zone also indicated increased
+flood areas by 3.15% between 2019 and 2023 due to lack
+of water permeability and increased surface runoff due to
+the reduction of surface water capacity [3]. Therefore,
+vulnerability to floods in Balikpapan and Samarinda poses not
+only local risks, but also systemic risks that can thwart the
+entire development plan of IKN.
+Flooding in East Kalimantan which includes Balikpapan
+and Samarinda as the two largest cities in East Kalimantan are
+considered to be highly dynamic, fluctuating as a consequence
+of changes in weather conditions and extreme rainfall .
+Climatologically, the province averages 174.8 mm rainfall,
+where it is also characterized by topical convective systems
+along with an intensity of global climate change . Eventually,
+high extreme rainfall is identified as the cause of flooding
+within an area [2]. The study has a scientific backing
+from a hydrological study of the Pemaluan watershed that
+show a very significant correlation between daily rainfall data
+between 2004 to 2023 and area of annual flood inundation.
+This study reveals the relationship between rainfall and
+expanded flood inundated area is increasing in proportional
+to increase in Rainfall intensity [3]. Further to add, based on
+recent study concerning the sustainability of IKN development
+that flood control measures in cities like Samarinda and
+Balikpapan were never completed and are predicted to get
+worse due to widespread land conversion [1].
+The use of traditional machine learning is limited for flood
+prediction as it works with particular types of data. The
+climate data that are generated at regional levels to develop
+predictions in case of extreme events is particularly compli-
+cated, has enormous dimensions, highly insufficient data of
+Volume 1, Issue 1 2
+Author et al.: Short version of title
+the minority class and predominantly uses the dominant class,
+which consequently creates significant difficulties in identi-
+fying flood signals, which are critically important [4]. We
+present our approach to with the integration of anomaly detec-
+tion with unsupervised machine learning to auto-capture the
+extremely entropic deviations in weather, and then applying
+the SMOTE (Synthetic Minority Over-sampling Technique)
+algorithm that balances the dataset in a synthetic manner with-
+out data loss.
+Also, traditional machine learning approaches are also
+extremely rely on human input and manual manipulation like
+selecting features, choosing a relevant algorithm, or tuning its
+parameters. This not only becomes a rather time consuming
+process, but also leaves room for human bias within the
+model. In order to address human bias and model the highly
+non-linear dependencies on real-world environments in an
+efficient and automated way, we selected three popular tree-
+based ensemble learning algorithms which Random Forest is
+utilized because of its remarkable stability, tolerance to noisy
+data, and prevention of over-fitting. XGBoost is preferred
+for its speed, efficiency, and the incorporation of features for
+handling missing data, which are often an issue in the real
+world, and CatBoost for its inherent strengths in avoiding
+over-fitting, especially for limited data [5, 6]. .
+To remove human bias and render the research process
+efficient, there is a fully-automated approach with Automated
+Machine Learning. The full predictive pipeline (data prep,
+feature extraction and model selection) is optimized using a
+Fast and Lightweight Automated Machine Learning (FLAML)
+system [7], to reduce or ideally fully eliminate human
+intervention.
+To bridge this gap, our research offers a data-driven
+approach using disaster event logs from the National Disaster
+Management Agency (BNPB) and weather data from Open-
+Meteo to predict the daily possibility of flood events occurring
+in Balikpapan and Samarinda between 1–3 days ahead. Our
+approach focuses on the following objectives:
+1. To construct a sequential time-series environmental
+dataset by integrating Open-Meteo weather data with
+BNPB disaster logs, enhanced by unsupervised anomaly
+scores and balanced using SMOTE.
+2. To compare the performance of three robust tree-
+ensemble algorithms (Random Forest, XGBoost, and
+CatBoost) tailored for predicting complex, imbalanced
+flood events.
+3. To automate the classification pipeline using the FLAML
+framework, ensuring an objective and efficient modeling
+process that eliminates subjective human bias.
+Related Works
+Parray and Owais Ahmad [8] investigate flood frequency and
+magnitude predictions, demonstrating the superiority of Ma-
+chine Learning method over conventional statistical models,
+such as Gumbel Extreme Value Type I, and Log-Pearson Type
+III (LP-III), especially for modeling non-linear variability and
+interplay of hydrological factors. The results of compari-
+son prove the high accuracy (R=0.9996) of data-driven mod-
+els like Polynomial Regression with an extremely low er-
+ror (RMSE)=860 m/s. In stark contrast, the performance of
+classical statistics has fatal drawbacks like underestimation
+of extreme flood discharge for high return periods and fail-
+ing to reflect dynamics of climate change due to its assump-
+tion of stationarity of the series. Kumar et al. [9] empha-
+sized, in their survey on applications of AI for floods detec-
+tion and management, that different ML algorithms including
+Random Forest (RF), Support Vector Machine (SVM), Ar-
+tificial Neural Networks (ANN) were efficient in extracting
+complex patterns that trigger floods from huge hydrological
+and weather information. These methods are efficient in the
+early warning systems for real-time application, however ap-
+plication ofML to flood Forecasting has significant disadvan-
+tages like the black-box phenomenon of an algorithm (mak-
+ing its decisionmaking difficult to interprete physicallly), its
+inclination towards overfitting, and the large volume of histor-
+ical data is required for its development. Meanwhile, Motta
+et al. [10] developed a framework based on an ML classi-
+fier combined with Geographical Information System (GIS)
+for predicting urban floods to overcome the poor spatial rep-
+resentation and poortheoretical understanding characteristic to
+standalone ML algorithms. The study reveals RF (Acc=0.96)
+as the best model, while the two-hour rainfall moving aver-
+age is the most important predictive factor. The combined ML
+and GIS Hot Spot analysis methodology resulted in a strongly
+consistent predictive system successfully detecting 97 out of
+116 flooding events and achieving a sensitivityof 0.84. The
+cost of improved sensitivity however has to be paid with an in-
+creased frequency of alarm (high false alarm rate), and weak
+explanatory relationships between flood causes and effects.
+Recent progresses in flood prediction are shifting towards
+time-series methods, furthest towards the sliding window/lag
+features to cater for the needs of real-time processing and
+to track the long-term memory of water flow duration.
+The advantages of the methodology above are demonstrated
+by Atashi et al. [11] who proved that Long Short-Term
+Memory (LSTM) consistently outperforms SARIMA and RF
+by capturing non-linear dynamics of peak flow unaffected by
+conventional models. To tackle the challenges of scarceness
+of extremities data for deep learning prediction, Weng et al.
+[12] leverage the time-series variant of Generative Adversarial
+Networks (GAN) to generate synthetic data in order to
+significantly enhance the accuracy of Gradient Boosting
+Regression Tree (GBRT), while to a small degree, marginally
+improving LSTM. Meanwhile, Li et al. [13] introduce a hybrid
+alternative by combining outputs from a hydrological water-
+influx model (MIKE 11) and historical observations to train
+LSTM. Trained via sliding window on a optimal ratio of 2:1,
+the hybrid framework minimizes the error values significantly
+although heavily reliant on the quality of simulation data and
+less adaptive to rugged topographical applications.
+Data imbalanced (class imbalance) induces a fatal bias
+to noise-sensitive extreme flood detection. The real-world
+consequence of data imbalance was proven by Esparza et
+al. [14], as they showed bias of crowdsourced reporting
+to create "blind spots" in the spatial domain that rendered
+community areas vulnerable to missing emergency mapping.
+In order to correct the classifaction bias caused by the
+imbalance ratio, Wang et al. [4] justified the hybrid framework
+combining Borderline-SMOTE and K-Means undersampling
+by asserting its significant improvement on Recall and F1-
+3 This work is licensed under a Creative Commons Attribution 4.0 International License (CC BY) Volume 1, Issue 1
+Author et al.: Short version of title
+scores with no scope to lose information. Confirming the
+superiority of SMOTE techniques, Matharaarachchi et al. [15]
+prove that Dirichlet ExtSMOTE was successful in removing
+noise in minority classes; the weighted synthetic samples
+extracted were proved to be far more representative and
+remarkably enhanced the Random Forest classifier model
+without damaging original data structure.
+The selection of tree-based ensemble algorithms (Random
+Forest, XGBoost and Cat Boost) has been undoubtedly
+proved most effective to handle complex and imbalanced
+tabular environmental data due to their solid mathematical
+architecture. Empirical evidences of this reliability are
+presented by Hsu et al. [5] in their extreme weather forecast
+study where the RF has achieved a peak accuracy of 70%
+with an AUC of 76%. This accuracy was achieved owing
+to the successful implementation of the Bagging technique on
+RF which helped reducing the model variance and classifying
+non-linear data boundaries avoiding the model to lean towards
+predicting the majority class. The same study also proposed
+the Cat Boost algorithm as most innovative due to its
+ability to work with categorical variables in a native manner
+thus preserving data integrity without sparking the usual
+infiltrations with data leakage caused by one-hot encoding. To
+round-up the performances of these ensemble architectures,
+Ma et al. [6] reinforced the superiority of XG Boost to
+plot flood risk; this model has strongly outperformed the
+classical LSSVM method with test accuracy of 0.84 and high
+precision to identified 63,15% of high risk locations. The
+aforementioned state-of the-art performance of XG Boost
+that was made possible by the adoption of the regularization
+term that penalized hard the model complexity to beat down
+the overfitting to the dominant classes supported by the
+column sampling property and the parallel computing oriented
+parallelization made this algorithm extremely agile in tackling
+missing values within the huge observation set.
+Moving towards automation in flood modeling has been
+driven by the efficiency of AutoML in overcoming the
+human biases and intricacies of manual parameter tuning.
+This efficiency is demonstrated by Guo et al. [16] who
+use the TPOT framework to test thousands of pipeline
+combinations; this method successfully achieved the most
+highly correlated flood prediction (NSE and R >0.95) and
+substantially outperformed manually tuned models. The
+prowess of AutoML’s complex pipeline architecture is further
+corroborated by Han et al. [17] on the stacking model set
+of regressor models which has been shown to outperform
+deep learning algorithms (LSTM) in predicting water level
+accurately. In the realm of risk mapping, Gao et al. [18] utilize
+the Auto-Sklearn framework to objectively and autonomously
+test various models to select CatBoost as the model of highest
+accuracy (0.9030) suggesting that pure data-driven model
+selection approaches for optimal models are extremely robust.
+To overcome the slow run-time issue of conventional AutoML,
+Chu et al. [7] have demonstrated the efficiency of the Fast and
+Lightweight AutoML (FLAML) framework; this resource-
+efficient searching approach has been successful in optimizing
+a very high accuracy XGBoost model (R= 0.963) capable of
+executing flood predictions 2000 times faster than the physical
+hydrodynamic model. Such an application of FLAML is
+significant not only in having autonomously identified a better
+predictor ensemble architecture but also in delivering the
+computational agility was essential for implementation of
+early warning systems in real time.
+In environmental anomaly detection, the unsupervised al-
+gorithms such as the Isolation Forest is considered far more
+rational than the supervised classifier since its capability to
+operate autonomously on the manually-unlabeled raw obser-
+vations in real-world setting with a view to detect extremely
+sparse anomalies. This efficacy was empirically proven by
+Agmeyang [19] evidenced that Isolation Forest relatively can
+reach the highest state-of-the-art performance (F1 score of
+64.41% and a Recall of 95%) at isolating the outliers, amortiz-
+ing the problem of poor Recall on models like OCSVM. The
+operational reliability of this algorithm in real-life field set-
+ting was also corroborated by Shi et al. [20] to monitor the
+soil water microdynamics; to be specific, the Isolation Forest
+model was evidenced to precisely localize the anomalous hy-
+drological cluster coincident with the actual landslide move-
+ment event in Chengdu. On the technical perspective, the ad-
+vantage of Isolation Forest can be justified from the fact that it
+does not attempt to build the profile of the majority class, us-
+ing the random binary partitioning trees to isolate anomalies,
+where this cut mechanism frees the computationally-expensive
+calculation of distance, rendering Isolation Forest very nimble,
+computationally efficient, and suitable for high-dimensional
+environmental sensor data streams processing.
+Methods
+This section provides a systematic, data-based approach
+utilized to compute daily flood likelihood in Balikpapan and
+Samarinda. In an effort to improve reproducibility and uphold
+the integrity of the experiment, the method is designed around
+a rigid chronological framework.
+Data Collection and Time-Series Transformation
+Our methods of data collection involved combining two
+main open source data streams based on temporal indexes
+in order to record the context of the environment per day.
+Records of historical flood events were collected from the
+registry of the Data and Information on Disasters in Indonesia
+(DIBI) database managed by the Indonesian National Disaster
+Management Authority (BNPB). To classify weather triggers,
+daily meteorological data between the years of 2016 and 2026
+were downloaded through the Open-Meteo API.
+Features downloaded included precipitation (i.e. Rainfall),
+maximum/minimum temperature, wind speed, and soil mois-
+ture parameters (i.e. Soil percentiles, rolling soil mean).
+Raw daily data was aggregated over running windows
+to model the aggregational effects of hydrological cycles.
+Additionally, explicit time-lagged covariates for temperature,
+rainfall and soil outputs were created from day to 7, and 3, 7
+and 14-day rolling sums. The target phenomenon was set three
+days ahead (F loodt+3) so as to create a time-series predictive
+classification task.
+To avoid a disastrous temporal data leakage with future
+records leading to the unnoticed prediction, we explicitly do
+not shuffle data randomly. Instead, the formatted sequence was
+bifurcated by a strict chronological time cut (TimeSeriesSplit),
+reserving the initial 70% of the historic order for training, with
+the remaining 30% held out as a entirely unseen test set to
+emulate the realisic operation of forecasting.
+Volume 1, Issue 1 4
+Author et al.: Short version of title
+Additionally, cyclical calendar features were included, such
+that the seasonality of the sequence was preserved (month_sin,
+month_cos, doy_sin, and doy_cos).
+Unsupervised Anomaly Detection
+In environmental anomaly detection, unsupervised algorithms
+would make much more reasonable choices than supervised
+classifiers since they could just automatically work on the
+manually-untabled raw observations for extremely sparse
+anomalies detection [19], [20]. It had been shown in earlier
+researches that the isolation forest algorithm would be more
+capable of isolating the anomalies by for instance not giving
+a profile of the big class and through the use of randomized
+binary partitioning system hence eliminatethe toil of costly
+distance computation processes [19].
+Based on this assumption, days of high magnitude variation
+were predicted using this unsupervised anomaly detection
+approach, before running the main classifiers. An Isolation
+Forest method was added across all the earlier performed
+environmental and soil features. The days of extreme
+anomalies in environmental conditions bear both a low
+probability from a statistical perspective, and a high intrinsic
+discrepancy in structure compared to normal observations.
+Thus, the algorithm proceeds to repeatedly perform very
+many random binary splits to find highly entropy anomalies
+in the dataset without regard to the underlying distribution of
+the dataset. The anomalous deviation score is given as a value
+on a 0 to 1 spectrum for each day observed. The score is an
+input into the supervised learning algorithm to compensate for
+the high shiftness of atmospheric conditions within each day
+observed.
+Results and Discussion
+Time-Series Feature Extraction and Anomaly Detection
+Both the raw data from Open-Meteo and BNPB have been
+reformatted via sliding window. This process makes sure that
+we handle weather events on right timing. Features from lag
+variables, and rolling sums over 3 days, 7 days, 14 days of
+accumulated rainfall help us to estimate level of humidity on
+ground right before that day. For initial unsupervised check,
+we apply Isolation Forest algorithm where each entry of each
+day gets an anomaly score. If you review the data exploration
+section you see that the anomaly scores readily divided the
+two classes. The flooded days (Class 1) received far higher
+values than the healthy day (Class 0). This trend suggests the
+hypothesis is reasonable that the cities generally experienced
+extreme shifts before a flooding. Given the evidence of strong
+positive correlation we used the anomaly score as one of the
+initial inputs for the supervised models that follows below.
+Figure 1: Distribution of the anomaly scores by class
+Class Imbalance Handling
+A big problem we encountered when processing our data
+was that class was severely unbalanced. In both Balikpapan
+and Samarinda, we get many more normal days compared to
+floods. If we had not taken action, any models we developed
+would have just predicted ‘no flood’ all the time. We solved
+this with the use of SMOTE: the Synthetic Minority Over-
+sampling Technique.
+We applied SMOTE only to training data (X_train) follow-
+ing TimeSeriesSplit (Table 1). Test set was left undisturbed
+entirely. Without touch to test data we prevent any sort of time
+leak and we demonstrate what is likely in real-world scenarios
+Table 1: Class Distribution Before and After SMOTE on Training Data
+Dataset Phase Non-Flood Days (Class 0) Flood Days (Class 1)
+Before SMOTE 18380 1906
+After SMOTE 18380 18380
+AutoML Pipeline Exploration and SOTA Model Compari-
+son
+Following this adjustment to the trainset data, we compared
+three widely-used tree-based methods, namely Random For-
+est, XGBoost and CatBoost to the FLAML machine learning
+platform. We allocated the AutoML process a time budget of
+120 seconds and the Average Precision (AUC-PR) score as a
+key indicator since it captures imbalanced distributions.
+Table 2 Visualizes the performance of all classifiers on the
+hidden test set. The analysis performed by FLAML showed
+that CatBoost with 0.1 learning_rate and 8192 n_estimators
+was the optimal set-up for boosting models. With a boost
+inperformance in all the boosting types when comparing AUC-
+PR scores against the traditional Random Forest, it can be
+argued that boosting approaches perform significantly better
+at the complex non-linear data relationship in weather forecast
+datasets.
+Table 2: Performance Comparison of State-of-the-Art Classifiers
+Model Accuracy Precision Recall F1-Score AUC-ROC AUC-PR
+AutoML (CatBoost) 0.9727 0.0000 0.0000 0.0000 0.4545 0.0410
+CatBoost 0.9735 0.0000 0.0000 0.0000 0.4230 0.0453
+Random Forest 0.9618 0.1364 0.0909 0.1091 0.4997 0.0637
+XGBoost 0.9548 0.0690 0.0606 0.0645 0.4233 0.0255
+Isolation Forest 0.8879 0.0336 0.1212 0.0526 0.5006 0.0721
+5 This work is licensed under a Creative Commons Attribution 4.0 International License (CC BY) Volume 1, Issue 1
+Author et al.: Short version of title
+Figure 2: Receiver Operating Characteristic (ROC) and Precision-Recall
+Curves
+Figure 3: Confusion Matrix at the Calibrated Operational Threshold
+Operational Threshold Calibration and Limitations
+By setting the threshold to a low value, at 0.333, we had to
+force the model to search for flooding events, that could also
+be observed by means of Fig. 3. Yet, even with this setting,
+the model was unable to find floods: out of the 33 flood events
+present in the test set, the model identified 2 (True Positives);
+failed to identify 31 of them (False Negatives); identified as
+floods 8 out of the 1251 no-event days (False Positives).
+Since the model missed many occurrences the final recall
+metric was drastically low which points to a huge problem
+in the model used - we cannot reliably predict floods in
+the city up to a few days in advance based solely on
+meteorological data. Balikpapan and Samarinda have local
+problems, drainage issues, the form of the land itself, tides
+(rob) for example, which significantly affect flood occurrences
+and these features were nowhere captured by the Open-Meteo
+dataset. Adjusting the decision threshold in an EWS may
+sound good at first, in hindsight these results tell us such a
+tool cannot work if it doesn’t incorporate any hydrological or
+geographical information.
+Feature Importance and Interpretability
+We decided to actually examine precisely what decisions were
+the drivers behind each of these algorithms and averaged the
+feature importance scores calculated for each model (Random
+Forest, XGBoost, and CatBoost). Fig. 4, once again, reveals
+that the actual feature drivers were entirely unlike what we
+might have intuitively assumed; we expected that accumulated
+rainfall and our anomaly score would be primary factors but
+the algorithms favoured basic calendar features month_sin and
+month_cos.
+The next most important calendar-features were also lagged
+temp values like tmin_lag6, tmin_lag1. Interestingly, none
+of the rainfall feature measurements appear to even be in the
+top list of important features. So, the tree based model was
+essentially learned to predict a flood based on what season it is
+not when it’s a crazy downpour. Knowing that it essentially
+uses what season it is to predict a flood that means why
+there were so many FN, or False Negative from the confusion
+matrix, feeding the system weather information alone made
+it more or less a seasonal calendar as oppose to a real time
+warning system.
+Figure 4: Top 20 Feature Importances Averaged Across Ensembles
+Conclusion
+We initially embarked on the construction of an automated
+machine learning pipeline in order to predict flood in Balik-
+papan and Samarinda 1 to 3 days ahead. We achieved this
+by obtaining daily open-source weather forecasts and apply-
+ing rolling totals to estimate cumulative rainfall and integrat-
+ing unsupervised anomaly scores in order to identify extreme
+weather events. However, in a final evaluation, it was revealed
+that relying purely on meteorological information simply fails
+to deliver reliable forecasts for urban flood in these locales in
+short time horizons.
+Even after equilibrating the dataset utilizing SMOTE, along
+with dropping the decision threshold down to 0.333 so as to
+oblige the model to consider detecting a flood, its performance
+was still inadequate. Our most efficient CatBoost model
+missed 31 of 33 positive cases of urban flood in the data test.
+In analyzing the process whereby our model made its decision,
+we discerned the key problem - The weather conditions or
+a weather anomaly were almost irrelevant when explaining
+flood, except calendar based features that represent month and
+year . Ultimately, our model did not grasp to predict flood on
+based on meteorological events that have been triggered, but
+just predicted which season is flood, Which are summer and
+Rainy season.
+It turn out that open-source weather API failed to incorpo-
+rate enough relevant factor. Flood in city of Balikpapan and
+Samarinda is extremely local issue which heavily influence by
+the poor of drainage networks, terrain slope, and ocean tides.
+Thus, in terms of developing EWS in the future, researchers
+must extend to include information from more local sources in
+order to grasp real reason of flood event that can assist with
+predicting more precisely
