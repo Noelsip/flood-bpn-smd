@@ -13,7 +13,7 @@ SEED = 42
 TARGET = "Flood_next_3d"
 DEFAULT_CITIES = ["Kota Balikpapan", "Kota Samarinda"]
 DEFAULT_CONTAMINATION = 0.05
-DEFAULT_SPLIT_MODE = "stratified_label_per_city"
+DEFAULT_SPLIT_MODE = "chronological_per_city"
 DEFAULT_MAX_KECAMATAN_PER_ALERT = 3
 
 
@@ -113,12 +113,12 @@ def fit_isolation_forest_for_city(
     test_out["flood_anomaly"] = test_out["is_anomaly"]
     train_out["anomaly_interpretation"] = np.where(
         train_out["is_anomaly"].eq(1),
-        "indikasi banjir",
+        "anomali cuaca",
         "normal",
     )
     test_out["anomaly_interpretation"] = np.where(
         test_out["is_anomaly"].eq(1),
-        "indikasi banjir",
+        "anomali cuaca",
         "normal",
     )
 
