@@ -15,6 +15,9 @@ DEFAULT_CITIES = ["Kota Balikpapan", "Kota Samarinda"]
 DEFAULT_CONTAMINATION = 0.05
 DEFAULT_SPLIT_MODE = "chronological_per_city"
 DEFAULT_MAX_KECAMATAN_PER_ALERT = 3
+DEFAULT_OPERATIONAL_TOP_RATE = 0.05
+CALENDAR_FEATURES = {"doy_sin", "doy_cos", "month_sin", "month_cos"}
+PERCENTILE_FEATURES = {"rain7_pctl", "precip7_pctl", "soil7_pctl"}
 
 
 @dataclass(frozen=True)
@@ -28,13 +31,39 @@ class CityIsolationResult:
 
 
 def feature_columns(data: pd.DataFrame) -> list[str]:
-    """Return numeric weather/time-series features, excluding labels and split metadata."""
-    excluded = {"Flood", TARGET, "split"}
+    """Return numeric hydrometeorological features for Isolation Forest fitting."""
+    excluded = {"Flood", TARGET, "split", *CALENDAR_FEATURES, *PERCENTILE_FEATURES}
     return [
         col
         for col in data.select_dtypes(include=[np.number]).columns
-        if col not in excluded
+        if col not in excluded and not col.endswith("_pctl")
     ]
+
+
+def add_rank_anomaly_flags(
+    frame: pd.DataFrame,
+    *,
+    score_col: str = "anomaly_score",
+    top_rates: tuple[float, ...] = (0.01, 0.05, 0.10),
+    operational_top_rate: float = DEFAULT_OPERATIONAL_TOP_RATE,
+) -> pd.DataFrame:
+    """Add score-rank flags; the operational anomaly flag is the top score slice."""
+    out = frame.sort_values(score_col, ascending=False).copy()
+    out["anomaly_rank"] = np.arange(1, len(out) + 1)
+    out["anomaly_score_percentile"] = 1 - ((out["anomaly_rank"] - 1) / max(len(out), 1))
+    for rate in top_rates:
+        pct = int(round(rate * 100))
+        n_top = max(1, int(np.ceil(len(out) * rate)))
+        out[f"top_{pct}pct_anomaly"] = (out["anomaly_rank"] <= n_top).astype(int)
+
+    operational_pct = int(round(operational_top_rate * 100))
+    operational_col = f"top_{operational_pct}pct_anomaly"
+    if operational_col not in out.columns:
+        n_top = max(1, int(np.ceil(len(out) * operational_top_rate)))
+        out[operational_col] = (out["anomaly_rank"] <= n_top).astype(int)
+    out["is_anomaly"] = out[operational_col].astype(int)
+    out["flood_anomaly"] = out["is_anomaly"]
+    return out.sort_values("time").reset_index(drop=True)
 
 
 def split_city_data(
@@ -80,6 +109,7 @@ def fit_isolation_forest_for_city(
     contamination: float = DEFAULT_CONTAMINATION,
     train_ratio: float = 0.80,
     split_mode: str = DEFAULT_SPLIT_MODE,
+    operational_top_rate: float = DEFAULT_OPERATIONAL_TOP_RATE,
     random_state: int = SEED,
 ) -> CityIsolationResult:
     """Fit scaler and Isolation Forest on one city's train fold, then score its test fold."""
@@ -107,10 +137,10 @@ def fit_isolation_forest_for_city(
     test_out = test_df.copy()
     train_out["anomaly_score"] = -model.score_samples(x_train)
     test_out["anomaly_score"] = -model.score_samples(x_test)
-    train_out["is_anomaly"] = (model.predict(x_train) == -1).astype(int)
-    test_out["is_anomaly"] = (model.predict(x_test) == -1).astype(int)
-    train_out["flood_anomaly"] = train_out["is_anomaly"]
-    test_out["flood_anomaly"] = test_out["is_anomaly"]
+    train_out["model_is_anomaly"] = (model.predict(x_train) == -1).astype(int)
+    test_out["model_is_anomaly"] = (model.predict(x_test) == -1).astype(int)
+    train_out = add_rank_anomaly_flags(train_out, operational_top_rate=operational_top_rate)
+    test_out = add_rank_anomaly_flags(test_out, operational_top_rate=operational_top_rate)
     train_out["anomaly_interpretation"] = np.where(
         train_out["is_anomaly"].eq(1),
         "anomali cuaca",
@@ -128,9 +158,16 @@ def fit_isolation_forest_for_city(
         if TARGET in test_out.columns
         else np.nan
     )
+    model_anomaly_on_historical_flood = (
+        int(((test_out["model_is_anomaly"] == 1) & (test_out[TARGET] == 1)).sum())
+        if TARGET in test_out.columns
+        else np.nan
+    )
+    model_detected_anomaly = int(test_out["model_is_anomaly"].sum())
     summary = {
         "city": city,
         "split_mode": split_mode,
+        "operational_top_rate": operational_top_rate,
         "train_days": int(len(train_out)),
         "test_days": int(len(test_out)),
         "train_start": train_out["time"].min(),
@@ -139,10 +176,13 @@ def fit_isolation_forest_for_city(
         "test_end": test_out["time"].max(),
         "detected_anomaly": int(test_out["is_anomaly"].sum()),
         "anomaly_rate": float(test_out["is_anomaly"].mean()),
+        "model_detected_anomaly": model_detected_anomaly,
+        "model_anomaly_rate": float(test_out["model_is_anomaly"].mean()),
         "mean_anomaly_score": float(test_out["anomaly_score"].mean()),
         "max_anomaly_score": float(test_out["anomaly_score"].max()),
         "historical_flood_days": historical_flood_days,
         "anomaly_on_historical_flood": anomaly_on_historical_flood,
+        "model_anomaly_on_historical_flood": model_anomaly_on_historical_flood,
     }
     return CityIsolationResult(city, train_out, test_out, summary, model, scaler)
 
@@ -154,6 +194,7 @@ def run_per_city_isolation_forest(
     contamination: float = DEFAULT_CONTAMINATION,
     train_ratio: float = 0.80,
     split_mode: str = DEFAULT_SPLIT_MODE,
+    operational_top_rate: float = DEFAULT_OPERATIONAL_TOP_RATE,
     random_state: int = SEED,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, CityIsolationResult]]:
     """Run an independent Isolation Forest pipeline for each requested city."""
@@ -175,6 +216,7 @@ def run_per_city_isolation_forest(
             contamination=contamination,
             train_ratio=train_ratio,
             split_mode=split_mode,
+            operational_top_rate=operational_top_rate,
             random_state=random_state,
         )
 
