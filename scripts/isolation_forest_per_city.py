@@ -13,6 +13,8 @@ SEED = 42
 TARGET = "Flood_next_3d"
 DEFAULT_CITIES = ["Kota Balikpapan", "Kota Samarinda"]
 DEFAULT_CONTAMINATION = 0.05
+DEFAULT_SPLIT_MODE = "stratified_label_per_city"
+DEFAULT_MAX_KECAMATAN_PER_ALERT = 3
 
 
 @dataclass(frozen=True)
@@ -39,10 +41,26 @@ def split_city_data(
     city_df: pd.DataFrame,
     *,
     train_ratio: float = 0.80,
+    split_mode: str = DEFAULT_SPLIT_MODE,
+    random_state: int = SEED,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split one city chronologically; prefer explicit train/test split when present."""
+    """Split one city into train/test while keeping the model city-specific."""
     ordered = city_df.sort_values("time").reset_index(drop=True)
-    if "split" in ordered.columns and {"train", "test"}.issubset(set(ordered["split"])):
+    if split_mode == "stratified_label_per_city" and TARGET in ordered.columns:
+        rng = np.random.RandomState(random_state)
+        train_parts = []
+        test_parts = []
+        for _, group in ordered.groupby(TARGET, sort=True):
+            idx = group.index.to_numpy()
+            rng.shuffle(idx)
+            n_train = int(np.floor(len(idx) * train_ratio))
+            if len(idx) > 1:
+                n_train = min(max(n_train, 1), len(idx) - 1)
+            train_parts.append(ordered.loc[idx[:n_train]])
+            test_parts.append(ordered.loc[idx[n_train:]])
+        train_df = pd.concat(train_parts, ignore_index=True).sort_values("time")
+        test_df = pd.concat(test_parts, ignore_index=True).sort_values("time")
+    elif split_mode == "existing_split" and "split" in ordered.columns and {"train", "test"}.issubset(set(ordered["split"])):
         train_df = ordered[ordered["split"] == "train"].copy()
         test_df = ordered[ordered["split"] == "test"].copy()
     else:
@@ -61,11 +79,17 @@ def fit_isolation_forest_for_city(
     *,
     contamination: float = DEFAULT_CONTAMINATION,
     train_ratio: float = 0.80,
+    split_mode: str = DEFAULT_SPLIT_MODE,
     random_state: int = SEED,
 ) -> CityIsolationResult:
     """Fit scaler and Isolation Forest on one city's train fold, then score its test fold."""
     city = str(city_df["city"].iloc[0])
-    train_df, test_df = split_city_data(city_df, train_ratio=train_ratio)
+    train_df, test_df = split_city_data(
+        city_df,
+        train_ratio=train_ratio,
+        split_mode=split_mode,
+        random_state=random_state,
+    )
 
     scaler = StandardScaler()
     x_train = scaler.fit_transform(train_df[features])
@@ -106,6 +130,7 @@ def fit_isolation_forest_for_city(
     )
     summary = {
         "city": city,
+        "split_mode": split_mode,
         "train_days": int(len(train_out)),
         "test_days": int(len(test_out)),
         "train_start": train_out["time"].min(),
@@ -128,6 +153,7 @@ def run_per_city_isolation_forest(
     cities: list[str] | None = None,
     contamination: float = DEFAULT_CONTAMINATION,
     train_ratio: float = 0.80,
+    split_mode: str = DEFAULT_SPLIT_MODE,
     random_state: int = SEED,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, CityIsolationResult]]:
     """Run an independent Isolation Forest pipeline for each requested city."""
@@ -148,6 +174,7 @@ def run_per_city_isolation_forest(
             features,
             contamination=contamination,
             train_ratio=train_ratio,
+            split_mode=split_mode,
             random_state=random_state,
         )
 
@@ -157,14 +184,57 @@ def run_per_city_isolation_forest(
     return summary, predictions, results
 
 
+def load_kecamatan_prior(clean_dir: Path, *, max_per_city: int = DEFAULT_MAX_KECAMATAN_PER_ALERT) -> pd.DataFrame:
+    """Load most flood-prone subdistricts per city for output-only location context."""
+    frames = []
+    for path in [clean_dir / "banjir_balikpapan.csv", clean_dir / "banjir_samarinda.csv"]:
+        if path.exists():
+            frames.append(pd.read_csv(path))
+    if not frames:
+        return pd.DataFrame(columns=["city", "kecamatan", "banjir_historis"])
+
+    prior = pd.concat(frames, ignore_index=True)
+    prior = prior.rename(columns={"kota": "city", "banjir_count": "banjir_historis"})
+    needed = ["city", "kecamatan", "banjir_historis"]
+    prior = prior[[col for col in needed if col in prior.columns]].copy()
+    if not set(needed).issubset(prior.columns):
+        return pd.DataFrame(columns=needed)
+
+    prior["banjir_historis"] = pd.to_numeric(prior["banjir_historis"], errors="coerce").fillna(0)
+    prior = prior.sort_values(["city", "banjir_historis", "kecamatan"], ascending=[True, False, True])
+    return prior.groupby("city", as_index=False).head(max_per_city).reset_index(drop=True)
+
+
+def attach_kecamatan_prior(
+    predictions: pd.DataFrame,
+    clean_dir: Path,
+    *,
+    max_per_city: int = DEFAULT_MAX_KECAMATAN_PER_ALERT,
+    anomalies_only: bool = True,
+) -> pd.DataFrame:
+    """Attach output-only kecamatan priors to anomaly rows."""
+    prior = load_kecamatan_prior(clean_dir, max_per_city=max_per_city)
+    base = predictions.copy()
+    if anomalies_only and "is_anomaly" in base.columns:
+        base = base[base["is_anomaly"] == 1].copy()
+    if prior.empty:
+        base["kecamatan"] = np.nan
+        base["banjir_historis"] = np.nan
+        return base
+    return base.merge(prior, on="city", how="left")
+
+
 def save_outputs(
     summary: pd.DataFrame,
     predictions: pd.DataFrame,
     output_dir: Path,
+    kecamatan_predictions: pd.DataFrame | None = None,
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     summary.to_csv(output_dir / "isolation_forest_summary_per_city.csv", index=False)
     predictions.to_csv(output_dir / "isolation_forest_anomaly_all.csv", index=False)
+    if kecamatan_predictions is not None:
+        kecamatan_predictions.to_csv(output_dir / "isolation_forest_anomaly_kecamatan.csv", index=False)
     for city, group in predictions.groupby("city"):
         slug = city.lower().replace("kota ", "").replace(" ", "_")
         group.to_csv(output_dir / f"isolation_forest_anomaly_{slug}.csv", index=False)
